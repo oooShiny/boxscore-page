@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Box Scores — April 15, 2025</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f9f7f1;
+  --text: #111;
+  --border: #111;
+  --border-light: #bbb;
+  --header-bg: #111;
+  --header-fg: #f9f7f1;
+  --row-alt: #eeeae0;
+  --subhead-bg: #ddd;
+  --sport-tag-bg: #111;
+  --sport-tag-fg: #f9f7f1;
+  --font: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #e0e0e0;
+  --border: #555;
+  --border-light: #333;
+  --header-bg: #1e1e1e;
+  --header-fg: #e0e0e0;
+  --row-alt: #1a1a1a;
+  --subhead-bg: #2a2a2a;
+  --sport-tag-bg: #2a2a2a;
+  --sport-tag-fg: #e0e0e0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── page header ── */
+.page-header {
+  border-bottom: 3px double var(--border);
+  padding: 10px 16px 8px;
+  text-align: center;
+}
+.site-title {
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.page-date {
+  font-size: 15px;
+  letter-spacing: 2px;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  gap: 8px;
+}
+.nav-row a, .nav-row button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 2px 8px;
+}
+.nav-row a:hover, .nav-row button:hover { background: var(--border); color: var(--bg); text-decoration: none; }
+
+.sport-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  padding: 0 16px;
+  overflow-x: auto;
+}
+.sport-tab {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+.sport-tab.active {
+  border-bottom-color: var(--border);
+}
+
+/* ── main layout ── */
+.main {
+  display: flex;
+  gap: 0;
+}
+.games-col {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 16px;
+  border-right: 1px solid var(--border-light);
+}
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  padding: 12px 12px;
+}
+
+/* ── section title ── */
+.section-title {
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 3px;
+  margin-bottom: 10px;
+}
+.subsection-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--subhead-bg);
+  padding: 2px 6px;
+  margin: 10px 0 4px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── games grid ── */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.game-box {
+  border: 1px solid var(--border);
+}
+.game-header {
+  background: var(--header-bg);
+  color: var(--header-fg);
+  display: grid;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+.game-matchup {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+.team-name { flex: 1; }
+.team-score { font-size: 16px; font-weight: 900; padding-left: 8px; }
+.team-score.winner { font-size: 18px; }
+.game-meta { font-size: 10px; opacity: 0.8; margin-top: 1px; }
+
+/* ── line score ── */
+.linescore-wrap { overflow-x: auto; }
+table.linescore {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+table.linescore th, table.linescore td {
+  text-align: right;
+  padding: 2px 4px;
+  border-left: 1px solid var(--border-light);
+  white-space: nowrap;
+  min-width: 18px;
+}
+table.linescore th:first-child, table.linescore td:first-child {
+  text-align: left;
+  border-left: none;
+  font-weight: 700;
+  min-width: 90px;
+}
+table.linescore thead th { background: var(--subhead-bg); font-weight: 700; }
+table.linescore .rhe { border-left: 2px solid var(--border); font-weight: 700; }
+table.linescore .total { font-weight: 900; }
+
+/* ── stat tables ── */
+table.stats {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-top: 4px;
+}
+table.stats th {
+  background: var(--subhead-bg);
+  padding: 2px 4px;
+  text-align: right;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+table.stats th:first-child { text-align: left; }
+table.stats td {
+  padding: 2px 4px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light);
+}
+table.stats td:first-child { text-align: left; }
+table.stats tr:nth-child(even) td { background: var(--row-alt); }
+table.stats tr.total td { font-weight: 700; border-top: 1px solid var(--border); }
+table.stats tr.total td:first-child { font-weight: 900; }
+
+/* ── standings ── */
+.standings-block { margin-bottom: 16px; }
+table.standings {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+table.standings th {
+  background: var(--header-bg);
+  color: var(--header-fg);
+  padding: 2px 4px;
+  text-align: right;
+  font-size: 10px;
+  font-weight: 700;
+}
+table.standings th:first-child { text-align: left; }
+table.standings td {
+  padding: 2px 4px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light);
+}
+table.standings td:first-child { text-align: left; font-weight: 600; }
+table.standings tr:nth-child(even) td { background: var(--row-alt); }
+.div-title {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 4px 2px;
+  border-top: 2px solid var(--border);
+  margin-top: 8px;
+}
+.div-title:first-child { border-top: 1px solid var(--border); margin-top: 0; }
+
+/* ── sport section ── */
+.sport-section { display: none; }
+.sport-section.active { display: block; }
+
+/* ── no games ── */
+.no-games { color: #888; font-style: italic; padding: 20px 0; }
+
+/* ── NFL leaders ── */
+.leader-row { display: flex; justify-content: space-between; padding: 2px 0; font-size: 11px; border-bottom: 1px solid var(--border-light); }
+.leader-row .cat { font-weight: 700; width: 80px; flex-shrink: 0; }
+.leader-row .stat { font-weight: 700; padding-left: 6px; flex-shrink: 0; }
+
+/* ── sport badge in multi-sport view ── */
+.sport-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 1px 5px;
+  background: var(--sport-tag-bg);
+  color: var(--sport-tag-fg);
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+@media (max-width: 900px) {
+  .main { flex-direction: column; }
+  .sidebar { width: 100%; border-top: 2px solid var(--border); }
+  .games-col { border-right: none; }
+  .games-grid { grid-template-columns: 1fr; }
+  .site-title { font-size: 26px; }
+}
+
+@media print {
+  .nav-row, .sport-tabs, body { font-size: 10px; }
+  .sport-section { display: block !important; }
+  .page-header { border-bottom: 2px solid #000; }
+}
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="site-title">Box Scores</div>
+    <div class="page-date">APRIL 15, 2025</div>
+  </header>
+  <nav class="nav-row">
+    <a href="20250414.html">&larr; Apr 14</a>
+    <span>MLB &bull; NHL &bull; NBA &bull; NFL</span>
+    <div style="display:flex;gap:6px">
+      <button id="dark-toggle">Dark Mode</button>
+      <a href="20250415.html">Today</a>
+      <a href="20250416.html">Apr 16 &rarr;</a>
+    </div>
+  </nav>
+  <div class="sport-tabs">
+    <button class="sport-tab active" data-sport="mlb">MLB ⚾</button><button class="sport-tab" data-sport="nhl">NHL 🏒</button><button class="sport-tab" data-sport="nba">NBA 🏀</button><button class="sport-tab" data-sport="nfl">NFL 🏈</button>
+  </div>
+  
+  <div class="sport-section" data-sport="mlb">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">MLB ⚾ — Box Scores</div>
+        <div class="games-grid">
+          <p class="no-games">No completed games.</p>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <p class="no-games">No standings available.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sport-section" data-sport="nhl">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">NHL 🏒 — Box Scores</div>
+        <div class="games-grid">
+          <p class="no-games">No completed games.</p>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <p class="no-games">No standings available.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sport-section" data-sport="nba">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">NBA 🏀 — Box Scores</div>
+        <div class="games-grid">
+          <p class="no-games">No completed games.</p>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <p class="no-games">No standings available.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sport-section" data-sport="nfl">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">NFL 🏈 — Box Scores</div>
+        <div class="games-grid">
+          <p class="no-games">No completed games.</p>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <p class="no-games">No standings available.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+(function() {
+  // dark mode
+  var dm = document.getElementById('dark-toggle');
+  function applyDark(on) {
+    document.body.classList.toggle('dark', on);
+    dm.textContent = on ? 'Light Mode' : 'Dark Mode';
+    localStorage.setItem('dark', on ? '1' : '');
+  }
+  applyDark(localStorage.getItem('dark') === '1');
+  dm.addEventListener('click', function() { applyDark(!document.body.classList.contains('dark')); });
+
+  // sport tabs
+  document.querySelectorAll('.sport-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var sport = btn.dataset.sport;
+      document.querySelectorAll('.sport-tab').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.sport-section').forEach(function(s) { s.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.sport-section[data-sport="' + sport + '"]').forEach(function(s) { s.classList.add('active'); });
+    });
+  });
+
+  // activate first tab with content
+  var firstActive = document.querySelector('.sport-tab');
+  if (firstActive) firstActive.click();
+})();
+</script>
+</body>
+</html>
