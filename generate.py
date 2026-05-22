@@ -607,6 +607,13 @@ def _preview_games(sport, league, d: date):
 # ── HTML rendering ────────────────────────────────────────────────────────────
 
 CSS = """
+@font-face {
+  font-family: "CloisterBlack";
+  src: url("../fonts/CloisterBlack.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -614,7 +621,7 @@ CSS = """
   --text: #111;
   --border: #111;
   --border-light: #bbb;
-  --header-bg: #111;
+  --header-bg: #111111d6;
   --header-fg: #f9f7f1;
   --row-alt: #eeeae0;
   --subhead-bg: #ddd;
@@ -654,10 +661,11 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 .site-title {
+  font-family: "CloisterBlack", serif;
   font-size: 38px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  text-transform: uppercase;
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
   line-height: 1;
 }
 .page-date {
@@ -1274,10 +1282,10 @@ def build_page(target_date: date, sports_data: dict):
     tabs = ""
     sections = ""
     sport_configs = [
-        ("mlb", "MLB ⚾"),
-        ("nhl", "NHL 🏒"),
-        ("nba", "NBA 🏀"),
-        ("nfl", "NFL 🏈"),
+        ("mlb", "MLB"),
+        ("nhl", "NHL"),
+        ("nba", "NBA"),
+        ("nfl", "NFL"),
     ]
     first = True
     for key, label in sport_configs:
@@ -1326,10 +1334,10 @@ def build_page(target_date: date, sports_data: dict):
 # ── main ─────────────────────────────────────────────────────────────────────
 
 _SPORT_CONFIGS = [
-    ("mlb", "baseball", "mlb", "MLB ⚾"),
-    ("nhl", "hockey",   "nhl", "NHL 🏒"),
-    ("nba", "basketball","nba","NBA 🏀"),
-    ("nfl", "football", "nfl", "NFL 🏈"),
+    ("mlb", "baseball", "mlb", "MLB"),
+    ("nhl", "hockey",   "nhl", "NHL"),
+    ("nba", "basketball","nba","NBA"),
+    ("nfl", "football", "nfl", "NFL"),
 ]
 
 _GAME_FETCHERS = {
