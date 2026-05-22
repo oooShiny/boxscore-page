@@ -1,22 +1,9 @@
 #!/usr/bin/env python3
 """
 Daily sports box score page generator.
-Covers MLB, NHL, NBA, NFL using api-sports.io APIs.
+Covers MLB, NHL, NBA, NFL using ESPN's public API (no key required).
 Usage:  python generate.py [YYYY-MM-DD]   (defaults to yesterday)
 Output: boxscores/YYYYMMDD.html
-
-Required environment variable:
-  API_SPORTS_KEY          Your api-sports.io API key
-
-Optional overrides:
-  MLB_LEAGUE_ID           MLB league ID in baseball API   (default: 1)
-  NHL_LEAGUE_ID           NHL league ID in hockey API     (default: 57)
-  NFL_LEAGUE_ID           NFL league ID in football API   (default: 1)
-  NBA_LEAGUE_ID           NBA league slug in NBA API      (default: standard)
-  MAX_REQUESTS_PER_SPORT  Daily request cap per sport     (default: 90)
-
-To look up correct league IDs for your account, call the /leagues endpoint on
-each sport API, e.g.:  curl -H "x-apisports-key: KEY" https://v1.baseball.api-sports.io/leagues
 """
 
 import sys
@@ -24,188 +11,242 @@ import os
 import requests
 from datetime import date, timedelta
 
-# ── configuration ─────────────────────────────────────────────────────────────
+# ── ESPN API ──────────────────────────────────────────────────────────────────
 
-API_KEY = os.environ.get("API_SPORTS_KEY", "")
-
-_BASES = {
-    "baseball": "https://v1.baseball.api-sports.io",
-    "hockey":   "https://v1.hockey.api-sports.io",
-    "nba":      "https://v2.nba.api-sports.io",
-    "football": "https://v1.american-football.api-sports.io",
-}
-
-MLB_LEAGUE = int(os.environ.get("MLB_LEAGUE_ID", "1"))
-NHL_LEAGUE = int(os.environ.get("NHL_LEAGUE_ID", "57"))
-NFL_LEAGUE = int(os.environ.get("NFL_LEAGUE_ID", "1"))
-NBA_LEAGUE = os.environ.get("NBA_LEAGUE_ID", "standard")
-
-MAX_REQUESTS = int(os.environ.get("MAX_REQUESTS_PER_SPORT", "90"))
-
-# ── request layer ─────────────────────────────────────────────────────────────
-
-_counts = {}
+_ESPN_SITE = "https://site.api.espn.com/apis/site/v2/sports"
+_ESPN_V2   = "https://site.api.espn.com/apis/v2/sports"
 
 _session = requests.Session()
 _session.headers.update({
-    "User-Agent": "boxscore-generator/2.0",
+    "User-Agent": "Mozilla/5.0 (compatible; boxscore-generator/3.0)",
     "Accept": "application/json",
 })
 
 
-def _api(sport, path, params=None):
-    """Single authenticated call; returns response list or None on failure."""
-    if not API_KEY:
-        print("  [error] API_SPORTS_KEY is not set.", file=sys.stderr)
-        return None
-    base = _BASES[sport]
-    used = _counts.get(base, 0)
-    if used >= MAX_REQUESTS:
-        print(f"  [warn] Daily request limit ({MAX_REQUESTS}) reached for {sport}.", file=sys.stderr)
-        return None
+def _get(url, params=None):
     try:
-        r = _session.get(
-            f"{base}{path}",
-            params=params,
-            timeout=20,
-            headers={"x-apisports-key": API_KEY},
-        )
+        r = _session.get(url, params=params, timeout=20)
         r.raise_for_status()
-        _counts[base] = used + 1
-        data = r.json()
-        errs = data.get("errors", {})
-        if errs and errs not in ({}, []):
-            print(f"  [warn] API error {path}: {errs}", file=sys.stderr)
-        return data.get("response")
+        return r.json()
     except Exception as e:
-        print(f"  [warn] {_BASES[sport]}{path}: {e}", file=sys.stderr)
+        print(f"  [warn] {url}: {e}", file=sys.stderr)
         return None
 
 
-# ── season helpers ────────────────────────────────────────────────────────────
-
-def _mlb_season(d: date) -> int:
-    return d.year
-
-
-def _nhl_season(d: date) -> int:
-    # NHL season starts in October; 2024-25 season → 2024
-    return d.year if d.month >= 9 else d.year - 1
+def _scoreboard(sport, league, d: date):
+    return _get(f"{_ESPN_SITE}/{sport}/{league}/scoreboard",
+                {"dates": d.strftime("%Y%m%d")})
 
 
-def _nba_season(d: date) -> str:
-    # NBA v2 API uses "YYYY-YY" e.g. "2024-25"
-    start = d.year if d.month >= 9 else d.year - 1
-    return f"{start}-{str(start + 1)[2:]}"
+def _summary(sport, league, event_id):
+    return _get(f"{_ESPN_SITE}/{sport}/{league}/summary", {"event": event_id})
 
 
-def _nfl_season(d: date) -> int:
-    # NFL season starts in September
-    return d.year if d.month >= 9 else d.year - 1
+def _standings_data(sport, league):
+    return _get(f"{_ESPN_V2}/{sport}/{league}/standings")
 
 
-# ── misc helpers ──────────────────────────────────────────────────────────────
+# ── helpers ───────────────────────────────────────────────────────────────────
 
 def fmt_pct(w, l):
     w, l = (w or 0), (l or 0)
     return f"{w/(w+l):.3f}".lstrip("0") if (w + l) else ".000"
 
 
-def _pad(lst, n):
-    return list(lst) + [""] * (n - len(lst))
+def _sv(stats, name):
+    for s in (stats or []):
+        if s.get("name") == name:
+            return s.get("value")
+    return None
+
+
+def _sd(stats, name):
+    for s in (stats or []):
+        if s.get("name") == name:
+            return s.get("displayValue", "")
+    return ""
+
+
+def _ls(linescores):
+    return [
+        str(int(x["value"])) if x.get("value") is not None else ""
+        for x in (linescores or [])
+    ]
+
+
+def _comp_pair(comp):
+    cs = comp.get("competitors", [])
+    return (
+        next((c for c in cs if c.get("homeAway") == "away"), {}),
+        next((c for c in cs if c.get("homeAway") == "home"), {}),
+    )
+
+
+def _collect_divisions(node):
+    """Walk ESPN's nested standings tree, return [(div_name, [entry, ...])]."""
+    children = node.get("children", [])
+    entries = (node.get("standings") or {}).get("entries", [])
+    if children:
+        result = []
+        for child in children:
+            result.extend(_collect_divisions(child))
+        return result
+    if entries:
+        name = node.get("name") or node.get("shortName") or "Unknown"
+        return [(name, entries)]
+    return []
+
+
+def _int_safe(v, default=0):
+    try:
+        return int(float(str(v or default)))
+    except (ValueError, TypeError):
+        return default
 
 
 # ── MLB ───────────────────────────────────────────────────────────────────────
 
 def mlb_games(d: date):
-    items = _api("baseball", "/games", {
-        "date": d.isoformat(),
-        "league": MLB_LEAGUE,
-        "season": _mlb_season(d),
-    })
-    if not items:
+    data = _scoreboard("baseball", "mlb", d)
+    if not data:
         return []
-    return [p for g in items
-            if g.get("status", {}).get("short") == "FT"
-            for p in [_parse_mlb_game(g)] if p]
+    games = []
+    for event in data.get("events", []):
+        comp = (event.get("competitions") or [{}])[0]
+        if not comp.get("status", {}).get("type", {}).get("completed"):
+            continue
+        g = _parse_mlb_game(event["id"], comp)
+        if g:
+            games.append(g)
+    return games
 
 
-def _parse_mlb_game(g):
-    teams = g.get("teams", {})
-    sc = g.get("scores", {})
-    hs, as_ = sc.get("home", {}), sc.get("away", {})
-    h_inn = hs.get("innings") or {}
-    a_inn = as_.get("innings") or {}
+def _parse_mlb_game(event_id, comp):
+    away_c, home_c = _comp_pair(comp)
+    away_name  = away_c.get("team", {}).get("displayName", "Away")
+    home_name  = home_c.get("team", {}).get("displayName", "Home")
+    away_abbr  = away_c.get("team", {}).get("abbreviation", "")
+    home_abbr  = home_c.get("team", {}).get("abbreviation", "")
+    away_score = away_c.get("score", "")
+    home_score = home_c.get("score", "")
+    venue      = comp.get("venue", {}).get("fullName", "")
 
-    num_keys = sorted([k for k in h_inn if k != "extra"], key=int)
-    has_extra = h_inn.get("extra") is not None or a_inn.get("extra") is not None
+    # Fallback line score from scoreboard per-inning linescores
+    a_ls = _ls(away_c.get("linescores"))
+    h_ls = _ls(home_c.get("linescores"))
+    n = max(len(a_ls), len(h_ls), 9)
+    inning_labels = [str(i + 1) for i in range(n)]
+    a_line = a_ls + [""] * (n - len(a_ls))
+    h_line = h_ls + [""] * (n - len(h_ls))
+    away_rhe = [away_score, "", ""]
+    home_rhe = [home_score, "", ""]
+    away_batters, home_batters = [], []
+    away_pitchers, home_pitchers = [], []
 
-    labels = num_keys[:]
-    a_line = ["" if a_inn.get(k) is None else str(a_inn[k]) for k in num_keys]
-    h_line = ["" if h_inn.get(k) is None else str(h_inn[k]) for k in num_keys]
+    summary = _summary("baseball", "mlb", event_id)
+    if summary:
+        # H/E live in header.competitions[].competitors[].hits / .errors
+        hcomp = summary.get("header", {}).get("competitions", [{}])[0]
+        for c in hcomp.get("competitors", []):
+            ha = c.get("homeAway", "")
+            hits   = c.get("hits", "")
+            errors = c.get("errors", "")
+            if ha == "away":
+                away_rhe[1] = str(hits) if hits != "" else ""
+                away_rhe[2] = str(errors) if errors != "" else ""
+            else:
+                home_rhe[1] = str(hits) if hits != "" else ""
+                home_rhe[2] = str(errors) if errors != "" else ""
 
-    if has_extra:
-        labels.append("E")
-        a_line.append("" if a_inn.get("extra") is None else str(a_inn["extra"]))
-        h_line.append("" if h_inn.get("extra") is None else str(h_inn["extra"]))
+        # Player stats — batting group has 'hits-atBats' as first key;
+        # pitching group has 'fullInnings.partInnings' as first key.
+        for team_block in summary.get("boxscore", {}).get("players", []):
+            tname = team_block.get("team", {}).get("displayName", "")
+            is_away = tname == away_name
+            for sg in team_block.get("statistics", []):
+                keys = sg.get("keys", [])
+                athletes = sg.get("athletes", [])
+                if not keys:
+                    continue
 
-    while len(labels) < 9:
-        labels.append(str(len(labels) + 1))
-        a_line.append("")
-        h_line.append("")
+                if keys[0] == "hits-atBats":
+                    # Batting group
+                    players = []
+                    for a in athletes:
+                        stats = a.get("stats", [])
+                        km = {k: stats[i] if i < len(stats) else "" for i, k in enumerate(keys)}
+                        if a.get("athlete"):
+                            players.append({
+                                "name": a["athlete"].get("displayName", ""),
+                                "pos":  a["athlete"].get("position", {}).get("abbreviation", ""),
+                                "ab":  km.get("atBats", ""),
+                                "r":   km.get("runs", ""),
+                                "h":   km.get("hits", ""),
+                                "rbi": km.get("RBIs", ""),
+                                "bb":  km.get("walks", ""),
+                                "so":  km.get("strikeouts", ""),
+                                "avg": km.get("avg", ""),
+                            })
+                    if is_away:
+                        away_batters = players
+                    else:
+                        home_batters = players
+
+                elif "fullInnings" in keys[0]:
+                    # Pitching group
+                    players = []
+                    for a in athletes:
+                        stats = a.get("stats", [])
+                        km = {k: stats[i] if i < len(stats) else "" for i, k in enumerate(keys)}
+                        if a.get("athlete"):
+                            players.append({
+                                "name": a["athlete"].get("displayName", ""),
+                                "ip":  km.get("fullInnings.partInnings", ""),
+                                "h":   km.get("hits", ""),
+                                "r":   km.get("runs", ""),
+                                "er":  km.get("earnedRuns", ""),
+                                "bb":  km.get("walks", ""),
+                                "so":  km.get("strikeouts", ""),
+                                "era": km.get("ERA", ""),
+                                "note": "",
+                            })
+                    if is_away:
+                        away_pitchers = players
+                    else:
+                        home_pitchers = players
 
     return {
         "sport": "MLB",
-        "away_name": teams.get("away", {}).get("name", "Away"),
-        "home_name": teams.get("home", {}).get("name", "Home"),
-        "away_score": as_.get("total", ""),
-        "home_score": hs.get("total", ""),
-        "inning_labels": labels,
-        "away_line": a_line,
-        "home_line": h_line,
-        "away_rhe": [as_.get("total", ""), as_.get("hits", ""), as_.get("errors", "")],
-        "home_rhe": [hs.get("total", ""), hs.get("hits", ""), hs.get("errors", "")],
-        "away_batters": [],
-        "home_batters": [],
-        "away_pitchers": [],
-        "home_pitchers": [],
-        "venue": (g.get("venue") or {}).get("name", ""),
+        "away_name": away_name, "home_name": home_name,
+        "away_score": away_score, "home_score": home_score,
+        "inning_labels": inning_labels,
+        "away_line": a_line, "home_line": h_line,
+        "away_rhe": away_rhe, "home_rhe": home_rhe,
+        "away_batters": away_batters, "home_batters": home_batters,
+        "away_pitchers": away_pitchers, "home_pitchers": home_pitchers,
+        "venue": venue,
     }
 
 
 def mlb_standings(d: date):
-    items = _api("baseball", "/standings", {
-        "league": MLB_LEAGUE,
-        "season": _mlb_season(d),
-    })
-    if not items:
+    data = _standings_data("baseball", "mlb")
+    if not data:
         return {}
-
     divisions = {}
-    for entry in items:
-        for group in entry.get("standings", []):
-            for rec in (group if isinstance(group, list) else [group]):
-                div = (rec.get("group") or {}).get("name", "")
-                if not div:
-                    continue
-                w = (rec.get("all") or {}).get("win", 0)
-                l = (rec.get("all") or {}).get("lose", 0)
-                divisions.setdefault(div, []).append({
-                    "name": (rec.get("team") or {}).get("name", ""),
-                    "w": w, "l": l,
-                    "pct": fmt_pct(w, l),
-                    "gb": "-",
-                    "strk": (rec.get("form") or "")[-1:] or "-",
-                })
-
-    # Compute GB from division leader
-    for teams in divisions.values():
+    for div_name, entries in _collect_divisions(data):
+        teams = []
+        for e in entries:
+            stats = e.get("stats", [])
+            w = _int_safe(_sv(stats, "wins"))
+            l = _int_safe(_sv(stats, "losses"))
+            gb   = _sd(stats, "gamesBehind") or "-"
+            strk = _sd(stats, "streak") or "-"
+            teams.append({
+                "name": e.get("team", {}).get("displayName", ""),
+                "w": w, "l": l, "pct": fmt_pct(w, l), "gb": gb, "strk": strk,
+            })
         teams.sort(key=lambda t: (-t["w"], t["l"]))
-        lw, ll = teams[0]["w"], teams[0]["l"]
-        for t in teams:
-            gb = ((lw - t["w"]) + (t["l"] - ll)) / 2
-            t["gb"] = "-" if gb == 0 else (str(int(gb)) if gb == int(gb) else str(gb))
-
+        divisions[div_name] = teams
     div_order = ["AL East", "AL Central", "AL West", "NL East", "NL Central", "NL West"]
     return {k: divisions[k] for k in div_order if k in divisions} | \
            {k: v for k, v in divisions.items() if k not in div_order}
@@ -213,350 +254,313 @@ def mlb_standings(d: date):
 
 # ── NHL ───────────────────────────────────────────────────────────────────────
 
-_HOCKEY_FINAL = {"FT", "AOT", "AET", "After OT", "After ET", "Finished"}
-
-
 def nhl_games(d: date):
-    items = _api("hockey", "/games", {
-        "date": d.isoformat(),
-        "league": NHL_LEAGUE,
-        "season": _nhl_season(d),
-    })
-    if not items:
+    data = _scoreboard("hockey", "nhl", d)
+    if not data:
         return []
-    return [p for g in items
-            if g.get("status", {}).get("short") in _HOCKEY_FINAL
-            for p in [_parse_nhl_game(g)] if p]
+    games = []
+    for event in data.get("events", []):
+        comp = (event.get("competitions") or [{}])[0]
+        if not comp.get("status", {}).get("type", {}).get("completed"):
+            continue
+        g = _parse_nhl_game(event["id"], comp)
+        if g:
+            games.append(g)
+    return games
 
 
-def _parse_nhl_game(g):
-    teams = g.get("teams", {})
-    sc = g.get("scores", {})
-    hs, as_ = sc.get("home", {}), sc.get("away", {})
+def _parse_nhl_game(event_id, comp):
+    away_c, home_c = _comp_pair(comp)
+    away_name  = away_c.get("team", {}).get("displayName", "Away")
+    home_name  = home_c.get("team", {}).get("displayName", "Home")
+    away_score = away_c.get("score", "")
+    home_score = home_c.get("score", "")
+    venue      = comp.get("venue", {}).get("fullName", "")
 
-    labels = ["1", "2", "3"]
-    a_line = [str(as_.get("period_1", 0)), str(as_.get("period_2", 0)), str(as_.get("period_3", 0))]
-    h_line = [str(hs.get("period_1", 0)), str(hs.get("period_2", 0)), str(hs.get("period_3", 0))]
+    a_ls = _ls(away_c.get("linescores"))
+    h_ls = _ls(home_c.get("linescores"))
+    n = max(len(a_ls), len(h_ls), 3)
 
+    status_desc = comp.get("status", {}).get("type", {}).get("shortDetail", "") or \
+                  comp.get("status", {}).get("type", {}).get("description", "")
     ot_note = ""
-    status_short = g.get("status", {}).get("short", "")
-    if status_short in ("AOT", "AET", "After OT", "After ET") or as_.get("overtime") is not None:
-        labels.append("OT")
-        a_line.append(str(as_.get("overtime", 0)))
-        h_line.append(str(hs.get("overtime", 0)))
-        ot_note = "OT"
+    labels = ["1", "2", "3"]
+    if n > 3:
+        if "SO" in status_desc.upper() or "SHOOTOUT" in status_desc.upper():
+            labels.append("SO")
+            ot_note = "SO"
+        else:
+            labels.append("OT")
+            ot_note = "OT"
+
+    a_line = a_ls + [""] * (len(labels) - len(a_ls))
+    h_line = h_ls + [""] * (len(labels) - len(h_ls))
+
+    team_stats_rows = []
+    summary = _summary("hockey", "nhl", event_id)
+    if summary:
+        away_stats, home_stats = {}, {}
+        for tb in summary.get("boxscore", {}).get("teams", []):
+            ha = tb.get("homeAway", "")
+            sd = {s.get("label") or s.get("name", ""): s.get("displayValue", "")
+                  for s in tb.get("statistics", [])}
+            if ha == "away":
+                away_stats = sd
+            else:
+                home_stats = sd
+        nhl_priority = [
+            "Shots on Goal", "Power Play Goals", "Power Play Opportunities",
+            "Penalty Minutes", "Faceoffs Won", "Blocked Shots",
+            "Giveaways", "Takeaways", "Hits",
+        ]
+        all_keys = set(away_stats) | set(home_stats)
+        team_stats_rows = [
+            {"label": k, "away": away_stats.get(k, "-"), "home": home_stats.get(k, "-")}
+            for k in nhl_priority if k in all_keys
+        ] + [
+            {"label": k, "away": away_stats.get(k, "-"), "home": home_stats.get(k, "-")}
+            for k in sorted(all_keys - set(nhl_priority))
+        ]
 
     return {
         "sport": "NHL",
-        "away_name": teams.get("away", {}).get("name", "Away"),
-        "home_name": teams.get("home", {}).get("name", "Home"),
-        "away_score": as_.get("total", ""),
-        "home_score": hs.get("total", ""),
+        "away_name": away_name, "home_name": home_name,
+        "away_score": away_score, "home_score": home_score,
         "period_labels": labels,
-        "away_line": a_line,
-        "home_line": h_line,
-        "ot_note": ot_note,
-        "team_stats_rows": _nhl_team_stats(g.get("id"), teams),
-        "venue": (g.get("venue") or {}).get("name", ""),
+        "away_line": a_line, "home_line": h_line,
+        "ot_note": ot_note, "team_stats_rows": team_stats_rows, "venue": venue,
     }
 
 
-def _nhl_team_stats(game_id, teams):
-    if not game_id:
-        return []
-    items = _api("hockey", "/games/statistics", {"id": game_id})
-    if not items or len(items) < 2:
-        return []
-
-    away_name = teams.get("away", {}).get("name", "")
-    home_name = teams.get("home", {}).get("name", "")
-
-    def to_dict(entry):
-        return {s.get("type", s.get("name", "")): s.get("value", "")
-                for s in entry.get("statistics", [])}
-
-    by_team = {e.get("team", {}).get("name", ""): to_dict(e) for e in items}
-    vals = list(by_team.values())
-    away_st = by_team.get(away_name) or (vals[0] if vals else {})
-    home_st = by_team.get(home_name) or (vals[-1] if vals else {})
-
-    priority = ["Shots on Goal", "Power Plays", "Penalty Minutes",
-                "Face Off %", "Hits", "Blocked Shots", "Giveaways", "Takeaways"]
-    all_keys = set(away_st) | set(home_st)
-    rows = [{"label": k, "away": away_st.get(k, "-"), "home": home_st.get(k, "-")}
-            for k in priority if k in all_keys]
-    rows += [{"label": k, "away": away_st.get(k, "-"), "home": home_st.get(k, "-")}
-             for k in sorted(all_keys - set(priority))]
-    return rows
-
-
 def nhl_standings(d: date):
-    items = _api("hockey", "/standings", {
-        "league": NHL_LEAGUE,
-        "season": _nhl_season(d),
-    })
-    if not items:
+    data = _standings_data("hockey", "nhl")
+    if not data:
         return {}
-
     divisions = {}
-    for entry in items:
-        for group in entry.get("standings", [[]]):
-            for rec in (group if isinstance(group, list) else [group]):
-                div = (rec.get("group") or {}).get("name", "")
-                if not div:
-                    continue
-                w = (rec.get("all") or {}).get("win", 0)
-                l = (rec.get("all") or {}).get("lose", 0)
-                otl = (rec.get("all") or {}).get("draw", 0)
-                divisions.setdefault(div, []).append({
-                    "name": (rec.get("team") or {}).get("name", ""),
-                    "w": w, "l": l, "otl": otl,
-                    "pts": w * 2 + otl,
-                    "strk": (rec.get("form") or "")[-1:] or "-",
-                })
-
+    for div_name, entries in _collect_divisions(data):
+        teams = []
+        for e in entries:
+            stats = e.get("stats", [])
+            w   = _int_safe(_sv(stats, "wins"))
+            l   = _int_safe(_sv(stats, "losses"))
+            otl = _int_safe(_sv(stats, "otLosses") or _sv(stats, "otl"))
+            pts = _int_safe(_sv(stats, "points")) or (w * 2 + otl)
+            strk = _sd(stats, "streak") or "-"
+            teams.append({
+                "name": e.get("team", {}).get("displayName", ""),
+                "w": w, "l": l, "otl": otl, "pts": pts, "strk": strk,
+            })
+        divisions[div_name] = sorted(teams, key=lambda t: -t["pts"])
     div_order = ["Atlantic", "Metropolitan", "Central", "Pacific"]
     ordered = {}
     for d_name in div_order:
         for k in divisions:
             if d_name.lower() in k.lower():
-                ordered[k] = sorted(divisions[k], key=lambda t: -t["pts"])
+                ordered[k] = divisions[k]
                 break
     for k, v in divisions.items():
         if k not in ordered:
-            ordered[k] = sorted(v, key=lambda t: -t["pts"])
+            ordered[k] = v
     return ordered
 
 
 # ── NBA ───────────────────────────────────────────────────────────────────────
 
 def nba_games(d: date):
-    items = _api("nba", "/games", {
-        "date": d.isoformat(),
-        "league": NBA_LEAGUE,
-        "season": _nba_season(d),
-    })
-    if not items:
+    data = _scoreboard("basketball", "nba", d)
+    if not data:
         return []
     games = []
-    for g in items:
-        short = g.get("status", {}).get("short")
-        if short != 3 and str(short) != "3":
+    for event in data.get("events", []):
+        comp = (event.get("competitions") or [{}])[0]
+        if not comp.get("status", {}).get("type", {}).get("completed"):
             continue
-        p = _parse_nba_game(g)
-        if p:
-            games.append(p)
+        g = _parse_nba_game(event["id"], comp)
+        if g:
+            games.append(g)
     return games
 
 
-def _parse_nba_game(g):
-    teams = g.get("teams", {})
-    sc = g.get("scores", {})
-    vis, home = teams.get("visitors", {}), teams.get("home", {})
-    vis_sc, home_sc = sc.get("visitors", {}), sc.get("home", {})
+def _parse_nba_game(event_id, comp):
+    away_c, home_c = _comp_pair(comp)
+    away_name  = away_c.get("team", {}).get("displayName", "Away")
+    home_name  = home_c.get("team", {}).get("displayName", "Home")
+    away_score = away_c.get("score", "")
+    home_score = home_c.get("score", "")
 
-    vis_ls = vis_sc.get("linescore", [])
-    home_ls = home_sc.get("linescore", [])
-    n = max(len(vis_ls), len(home_ls), 4)
+    a_ls = _ls(away_c.get("linescores"))
+    h_ls = _ls(home_c.get("linescores"))
+    n = max(len(a_ls), len(h_ls), 4)
 
-    labels = ["1", "2", "3", "4"] + (["OT"] if n == 5 else [f"OT{i}" for i in range(1, n - 3)] if n > 5 else [])
-    a_line = _pad(vis_ls, n)
-    h_line = _pad(home_ls, n)
+    if n == 5:
+        labels = ["1", "2", "3", "4", "OT"]
+    elif n > 5:
+        labels = ["1", "2", "3", "4"] + [f"OT{i}" for i in range(1, n - 3)]
+    else:
+        labels = ["1", "2", "3", "4"]
 
-    game_id = g.get("id")
-    away_players, home_players = _nba_player_stats(game_id, vis.get("id"), home.get("id"))
+    a_line = a_ls + [""] * (n - len(a_ls))
+    h_line = h_ls + [""] * (n - len(h_ls))
+
+    away_players, home_players = [], []
+    summary = _summary("basketball", "nba", event_id)
+    if summary:
+        for team_block in summary.get("boxscore", {}).get("players", []):
+            tname = team_block.get("team", {}).get("displayName", "")
+            is_away = tname == away_name
+            for sg in team_block.get("statistics", []):
+                keys = sg.get("keys", [])
+                athletes = sg.get("athletes", [])
+                players = []
+                for a in athletes:
+                    stats = a.get("stats", [])
+                    km = {k: stats[i] if i < len(stats) else "" for i, k in enumerate(keys)}
+                    mins = km.get("minutes", km.get("min", ""))
+                    if not mins or str(mins) in ("0", "0:00", "0.0", "DNP", "--"):
+                        continue
+                    if a.get("athlete"):
+                        players.append({
+                            "name": a["athlete"].get("displayName", ""),
+                            "pos":  a["athlete"].get("position", {}).get("abbreviation", ""),
+                            "pts":  km.get("points", "0") or "0",
+                            "reb":  km.get("rebounds", "0") or "0",
+                            "ast":  km.get("assists", "0") or "0",
+                            "fg":   km.get("fieldGoalsMade-fieldGoalsAttempted", ""),
+                            "3p":   km.get("threePointFieldGoalsMade-threePointFieldGoalsAttempted", ""),
+                            "ft":   km.get("freeThrowsMade-freeThrowsAttempted", ""),
+                        })
+                players.sort(key=lambda x: -_int_safe(x["pts"]))
+                if is_away:
+                    away_players = players
+                else:
+                    home_players = players
 
     return {
         "sport": "NBA",
-        "away_name": f"{vis.get('city', '')} {vis.get('name', '')}".strip(),
-        "home_name": f"{home.get('city', '')} {home.get('name', '')}".strip(),
-        "away_score": vis_sc.get("points", ""),
-        "home_score": home_sc.get("points", ""),
+        "away_name": away_name, "home_name": home_name,
+        "away_score": away_score, "home_score": home_score,
         "period_labels": labels,
-        "away_line": a_line,
-        "home_line": h_line,
-        "away_players": away_players,
-        "home_players": home_players,
+        "away_line": a_line, "home_line": h_line,
+        "away_players": away_players, "home_players": home_players,
     }
 
 
-def _nba_player_stats(game_id, away_id, home_id):
-    if not game_id:
-        return [], []
-    items = _api("nba", "/players/statistics", {"game": game_id})
-    if not items:
-        return [], []
-
-    away_players, home_players = [], []
-    for p in items:
-        mins = p.get("min") or ""
-        if not mins or mins in ("0:00", "0", ""):
-            continue
-        player = p.get("player", {})
-        name = f"{player.get('firstname', '')} {player.get('lastname', '')}".strip()
-        row = {
-            "name": name,
-            "pos":  p.get("pos", ""),
-            "pts":  p.get("points", 0) or 0,
-            "reb":  p.get("totReb", 0) or 0,
-            "ast":  p.get("assists", 0) or 0,
-            "fg":   f"{p.get('fgm', 0)}-{p.get('fga', 0)}",
-            "3p":   f"{p.get('tpm', 0)}-{p.get('tpa', 0)}",
-            "ft":   f"{p.get('ftm', 0)}-{p.get('fta', 0)}",
-        }
-        tid = (p.get("team") or {}).get("id")
-        if tid == away_id:
-            away_players.append(row)
-        elif tid == home_id:
-            home_players.append(row)
-
-    away_players.sort(key=lambda x: -x["pts"])
-    home_players.sort(key=lambda x: -x["pts"])
-    return away_players, home_players
-
-
 def nba_standings(d: date):
-    items = _api("nba", "/standings", {
-        "league": NBA_LEAGUE,
-        "season": _nba_season(d),
-    })
-    if not items:
+    data = _standings_data("basketball", "nba")
+    if not data:
         return {}
-
-    confs = {}
-    for entry in items:
-        conf = (entry.get("conference") or {}).get("name", "").lower()
-        label = conf.capitalize() + "ern Conference"
-        w = (entry.get("win") or {}).get("total", 0) or 0
-        l = (entry.get("loss") or {}).get("total", 0) or 0
-        gb = entry.get("gamesBehind")
-        streak_n = entry.get("streak")
-        win_streak = entry.get("winStreak")
-        strk = (("W" if win_streak else "L") + str(streak_n)) if streak_n else "-"
-        confs.setdefault(label, []).append({
-            "name": (entry.get("team") or {}).get("name", ""),
-            "w": w, "l": l,
-            "pct": fmt_pct(w, l),
-            "gb": "-" if not gb else str(gb),
-            "strk": strk,
-        })
-
-    ordered = {}
-    for c in ["east", "west"]:
-        label = c.capitalize() + "ern Conference"
-        if label in confs:
-            ordered[label] = sorted(confs[label], key=lambda t: (-t["w"], t["l"]))
-    for k, v in confs.items():
-        if k not in ordered:
-            ordered[k] = sorted(v, key=lambda t: (-t["w"], t["l"]))
-    return ordered
+    divisions = {}
+    for div_name, entries in _collect_divisions(data):
+        teams = []
+        for e in entries:
+            stats = e.get("stats", [])
+            w    = _int_safe(_sv(stats, "wins"))
+            l    = _int_safe(_sv(stats, "losses"))
+            gb   = _sd(stats, "gamesBehind") or "-"
+            strk = _sd(stats, "streak") or "-"
+            teams.append({
+                "name": e.get("team", {}).get("displayName", ""),
+                "w": w, "l": l, "pct": fmt_pct(w, l), "gb": gb, "strk": strk,
+            })
+        divisions[div_name] = sorted(teams, key=lambda t: (-t["w"], t["l"]))
+    return divisions
 
 
 # ── NFL ───────────────────────────────────────────────────────────────────────
 
 def nfl_games(d: date):
-    items = _api("football", "/games", {
-        "date": d.isoformat(),
-        "league": NFL_LEAGUE,
-        "season": _nfl_season(d),
-    })
-    if not items:
+    data = _scoreboard("football", "nfl", d)
+    if not data:
         return []
-    return [p for g in items
-            if g.get("status", {}).get("short") == "FT"
-            for p in [_parse_nfl_game(g)] if p]
+    games = []
+    for event in data.get("events", []):
+        comp = (event.get("competitions") or [{}])[0]
+        if not comp.get("status", {}).get("type", {}).get("completed"):
+            continue
+        g = _parse_nfl_game(event["id"], comp)
+        if g:
+            games.append(g)
+    return games
 
 
-def _parse_nfl_game(g):
-    teams = g.get("teams", {})
-    sc = g.get("scores", {})
-    hs, as_ = sc.get("home", {}), sc.get("away", {})
+def _parse_nfl_game(event_id, comp):
+    away_c, home_c = _comp_pair(comp)
+    away_name  = away_c.get("team", {}).get("displayName", "Away")
+    home_name  = home_c.get("team", {}).get("displayName", "Home")
+    away_score = away_c.get("score", "")
+    home_score = home_c.get("score", "")
+    venue      = comp.get("venue", {}).get("fullName", "")
 
-    labels = ["1", "2", "3", "4"]
-    a_line = [str(as_.get(f"quarter_{i}") or "") for i in range(1, 5)]
-    h_line = [str(hs.get(f"quarter_{i}") or "") for i in range(1, 5)]
+    a_ls = _ls(away_c.get("linescores"))
+    h_ls = _ls(home_c.get("linescores"))
+    n = max(len(a_ls), len(h_ls), 4)
 
     ot_note = ""
-    if as_.get("overtime") is not None:
+    labels = ["1", "2", "3", "4"]
+    if n > 4:
         labels.append("OT")
-        a_line.append(str(as_.get("overtime", 0)))
-        h_line.append(str(hs.get("overtime", 0)))
         ot_note = "OT"
+
+    a_line = a_ls + [""] * (len(labels) - len(a_ls))
+    h_line = h_ls + [""] * (len(labels) - len(h_ls))
+
+    team_stats_rows = []
+    summary = _summary("football", "nfl", event_id)
+    if summary:
+        away_stats, home_stats = {}, {}
+        for tb in summary.get("boxscore", {}).get("teams", []):
+            ha = tb.get("homeAway", "")
+            sd = {s.get("label") or s.get("name", ""): s.get("displayValue", "")
+                  for s in tb.get("statistics", [])}
+            if ha == "away":
+                away_stats = sd
+            else:
+                home_stats = sd
+        nfl_priority = [
+            "Total Yards", "Passing Yards", "Rushing Yards", "First Downs",
+            "Third Down Efficiency", "Turnovers", "Sacks",
+            "Penalties", "Possession", "Yards Per Play",
+        ]
+        all_keys = set(away_stats) | set(home_stats)
+        team_stats_rows = [
+            {"label": k, "away": away_stats.get(k, "-"), "home": home_stats.get(k, "-")}
+            for k in nfl_priority if k in all_keys
+        ] + [
+            {"label": k, "away": away_stats.get(k, "-"), "home": home_stats.get(k, "-")}
+            for k in sorted(all_keys - set(nfl_priority))
+        ]
 
     return {
         "sport": "NFL",
-        "away_name": teams.get("away", {}).get("name", "Away"),
-        "home_name": teams.get("home", {}).get("name", "Home"),
-        "away_score": as_.get("total", ""),
-        "home_score": hs.get("total", ""),
+        "away_name": away_name, "home_name": home_name,
+        "away_score": away_score, "home_score": home_score,
         "period_labels": labels,
-        "away_line": a_line,
-        "home_line": h_line,
-        "ot_note": ot_note,
-        "team_stats_rows": _nfl_team_stats(g.get("id"), teams),
-        "venue": (g.get("venue") or {}).get("name", ""),
+        "away_line": a_line, "home_line": h_line,
+        "ot_note": ot_note, "team_stats_rows": team_stats_rows, "venue": venue,
     }
 
 
-def _nfl_team_stats(game_id, teams):
-    if not game_id:
-        return []
-    items = _api("football", "/games/statistics", {"id": game_id})
-    if not items or len(items) < 2:
-        return []
-
-    away_name = teams.get("away", {}).get("name", "")
-    home_name = teams.get("home", {}).get("name", "")
-
-    def flatten(entry):
-        flat = {}
-        for group in entry.get("statistics", []):
-            for stat in (group.get("statistics") or []):
-                flat[stat.get("name", "")] = stat.get("value", "")
-        return flat
-
-    by_team = {e.get("team", {}).get("name", ""): flatten(e) for e in items}
-    vals = list(by_team.values())
-    away_st = by_team.get(away_name) or (vals[0] if vals else {})
-    home_st = by_team.get(home_name) or (vals[-1] if vals else {})
-
-    priority = ["Total Yards", "Passing Yards", "Rushing Yards", "First Downs",
-                "Third Down Efficiency", "Turnovers", "Sacks",
-                "Penalties", "Time of Possession", "Yards Per Play"]
-    all_keys = set(away_st) | set(home_st)
-    rows = [{"label": k, "away": away_st.get(k, "-"), "home": home_st.get(k, "-")}
-            for k in priority if k in all_keys]
-    rows += [{"label": k, "away": away_st.get(k, "-"), "home": home_st.get(k, "-")}
-             for k in sorted(all_keys - set(priority))]
-    return rows
-
-
 def nfl_standings(d: date):
-    items = _api("football", "/standings", {
-        "league": NFL_LEAGUE,
-        "season": _nfl_season(d),
-    })
-    if not items:
+    data = _standings_data("football", "nfl")
+    if not data:
         return {}
-
     divisions = {}
-    for entry in items:
-        conf = (entry.get("conference") or {}).get("name", "")
-        div  = (entry.get("division") or {}).get("name", "")
-        key  = f"{conf} {div}".strip() if conf or div else "Unknown"
-        won  = entry.get("won", 0) or 0
-        lost = entry.get("lost", 0) or 0
-        ties = entry.get("ties", 0) or 0
-        strk = entry.get("streak") or {}
-        divisions.setdefault(key, []).append({
-            "name": (entry.get("team") or {}).get("name", ""),
-            "w": won, "l": lost, "t": ties,
-            "pct": entry.get("pct") or fmt_pct(won, lost),
-            "pf":  entry.get("points_for", ""),
-            "pa":  entry.get("points_against", ""),
-            "strk": (strk.get("type", "") + str(strk.get("count", ""))) if strk else "-",
-        })
-
+    for div_name, entries in _collect_divisions(data):
+        teams = []
+        for e in entries:
+            stats = e.get("stats", [])
+            w   = _int_safe(_sv(stats, "wins"))
+            l   = _int_safe(_sv(stats, "losses"))
+            t   = _int_safe(_sv(stats, "ties"))
+            pct = _sd(stats, "winPercent") or fmt_pct(w, l)
+            pf  = _sd(stats, "pointsFor") or ""
+            pa  = _sd(stats, "pointsAgainst") or ""
+            strk = _sd(stats, "streak") or "-"
+            teams.append({
+                "name": e.get("team", {}).get("displayName", ""),
+                "w": w, "l": l, "t": t, "pct": pct, "pf": pf, "pa": pa, "strk": strk,
+            })
+        divisions[div_name] = teams
     div_order = ["AFC East", "AFC North", "AFC South", "AFC West",
                  "NFC East", "NFC North", "NFC South", "NFC West"]
     ordered = {k: divisions[k] for k in div_order if k in divisions}
@@ -1261,10 +1265,6 @@ def main():
     else:
         target_date = date.today() - timedelta(days=1)
 
-    if not API_KEY:
-        print("ERROR: set the API_SPORTS_KEY environment variable before running.", file=sys.stderr)
-        sys.exit(1)
-
     print(f"Generating box scores for {target_date.isoformat()} ...")
 
     sports_data = {}
@@ -1274,28 +1274,28 @@ def main():
     mlb_s = mlb_standings(target_date)
     games_html = "".join(render_mlb_game(g) for g in mlb_g)
     sports_data["mlb"] = render_sport_section("mlb", "MLB ⚾", games_html, render_mlb_standings(mlb_s))
-    print(f"    {len(mlb_g)} games  ({_requests_used('baseball')} requests used)")
+    print(f"    {len(mlb_g)} games")
 
     print("  Fetching NHL...")
     nhl_g = nhl_games(target_date)
     nhl_s = nhl_standings(target_date)
     games_html = "".join(render_nhl_game(g) for g in nhl_g)
     sports_data["nhl"] = render_sport_section("nhl", "NHL 🏒", games_html, render_nhl_standings(nhl_s))
-    print(f"    {len(nhl_g)} games  ({_requests_used('hockey')} requests used)")
+    print(f"    {len(nhl_g)} games")
 
     print("  Fetching NBA...")
     nba_g = nba_games(target_date)
     nba_s = nba_standings(target_date)
     games_html = "".join(render_nba_game(g) for g in nba_g)
     sports_data["nba"] = render_sport_section("nba", "NBA 🏀", games_html, render_nba_standings(nba_s))
-    print(f"    {len(nba_g)} games  ({_requests_used('nba')} requests used)")
+    print(f"    {len(nba_g)} games")
 
     print("  Fetching NFL...")
     nfl_g = nfl_games(target_date)
     nfl_s = nfl_standings(target_date)
     games_html = "".join(render_nfl_game(g) for g in nfl_g)
     sports_data["nfl"] = render_sport_section("nfl", "NFL 🏈", games_html, render_nfl_standings(nfl_s))
-    print(f"    {len(nfl_g)} games  ({_requests_used('football')} requests used)")
+    print(f"    {len(nfl_g)} games")
 
     html = build_page(target_date, sports_data)
 
@@ -1305,10 +1305,6 @@ def main():
         f.write(html)
 
     print(f"  Written: {out_path}")
-
-
-def _requests_used(sport):
-    return _counts.get(_BASES[sport], 0)
 
 
 if __name__ == "__main__":
