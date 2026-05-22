@@ -27,17 +27,17 @@ jobs:
 
       - name: Update index redirect
         run: |
-          YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
+          TODAY=$(date -u +%Y%m%d)
           cat > index.html <<EOF
           <!DOCTYPE html>
           <html>
           <head>
             <meta charset="utf-8">
-            <meta http-equiv="refresh" content="0;url=boxscores/${YESTERDAY}.html">
+            <meta http-equiv="refresh" content="0;url=boxscores/${TODAY}.html">
             <title>Boxscores</title>
           </head>
           <body>
-            <a href="boxscores/${YESTERDAY}.html">Latest boxscores (${YESTERDAY})</a>
+            <a href="boxscores/${TODAY}.html">Today's boxscores (${TODAY})</a>
           </body>
           </html>
           EOF

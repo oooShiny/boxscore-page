@@ -82,6 +82,16 @@ def _comp_pair(comp):
     )
 
 
+def _game_state(comp):
+    """Returns 'pre', 'in', or 'post'."""
+    return (comp.get("status") or {}).get("type", {}).get("state", "post")
+
+
+def _status_detail(comp):
+    st = (comp.get("status") or {}).get("type", {})
+    return st.get("shortDetail") or st.get("description", "")
+
+
 def _collect_divisions(node):
     """Walk ESPN's nested standings tree, return [(div_name, [entry, ...])]."""
     children = node.get("children", [])
@@ -568,6 +578,30 @@ def nfl_standings(d: date):
         if k not in ordered:
             ordered[k] = v
     return ordered
+
+
+def _preview_games(sport, league, d: date):
+    """Return scheduled or in-progress (non-completed) games for any sport."""
+    data = _scoreboard(sport, league, d)
+    if not data:
+        return []
+    games = []
+    for event in data.get("events", []):
+        comp = (event.get("competitions") or [{}])[0]
+        state = _game_state(comp)
+        if state == "post":
+            continue
+        away_c, home_c = _comp_pair(comp)
+        games.append({
+            "away_name": away_c.get("team", {}).get("displayName", "Away"),
+            "home_name": home_c.get("team", {}).get("displayName", "Home"),
+            "away_score": away_c.get("score", "") if state == "in" else "",
+            "home_score": home_c.get("score", "") if state == "in" else "",
+            "state": state,
+            "status_detail": _status_detail(comp),
+            "venue": comp.get("venue", {}).get("fullName", ""),
+        })
+    return games
 
 
 # ── HTML rendering ────────────────────────────────────────────────────────────
@@ -1130,6 +1164,34 @@ def render_team_stats_table(rows, away_name, home_name):
     </table>"""
 
 
+def render_preview_game(g):
+    state = g["state"]
+    venue = f'<div class="game-meta">{h(g["venue"])}</div>' if g.get("venue") else ""
+    status_lbl = g.get("status_detail") or ("In Progress" if state == "in" else "Scheduled")
+
+    if state == "in":
+        away_score = g.get("away_score") or "0"
+        home_score = g.get("home_score") or "0"
+        score_html = (
+            f'<div class="game-matchup"><span class="team-name">{h(g["away_name"])}</span>'
+            f'<span class="team-score">{h(away_score)}</span></div>'
+            f'<div class="game-matchup"><span class="team-name">{h(g["home_name"])}</span>'
+            f'<span class="team-score">{h(home_score)}</span></div>'
+        )
+    else:
+        score_html = (
+            f'<div class="game-matchup"><span class="team-name">{h(g["away_name"])}</span></div>'
+            f'<div class="game-matchup"><span class="team-name">{h(g["home_name"])}</span></div>'
+        )
+
+    return (
+        f'<div class="game-box">'
+        f'<div class="game-header">{score_html}'
+        f'<div class="game-meta">{h(status_lbl)}</div>{venue}</div>'
+        f'</div>'
+    )
+
+
 def render_mlb_standings(standings):
     if not standings:
         return ""
@@ -1182,8 +1244,8 @@ def render_nfl_standings(standings):
     return out
 
 
-def render_sport_section(sport_key, sport_label, games_html, standings_html):
-    games_inner = games_html if games_html else '<p class="no-games">No completed games.</p>'
+def render_sport_section(sport_key, sport_label, games_html, standings_html, no_games_msg="No completed games."):
+    games_inner = games_html if games_html else f'<p class="no-games">{no_games_msg}</p>'
     return f"""
   <div class="sport-section" data-sport="{sport_key}">
     <div class="main">
@@ -1244,7 +1306,7 @@ def build_page(target_date: date, sports_data: dict):
     <span>MLB &bull; NHL &bull; NBA &bull; NFL</span>
     <div style="display:flex;gap:6px">
       <button id="dark-toggle">Dark Mode</button>
-      <a href="{target_date.strftime('%Y%m%d')}.html">Today</a>
+      <a href="{date.today().strftime('%Y%m%d')}.html">Today</a>
       <a href="{next_date.strftime('%Y%m%d')}.html">{next_date.strftime('%b %-d')} &rarr;</a>
     </div>
   </nav>
@@ -1259,52 +1321,63 @@ def build_page(target_date: date, sports_data: dict):
 
 # ── main ─────────────────────────────────────────────────────────────────────
 
-def main():
-    if len(sys.argv) > 1:
-        target_date = date.fromisoformat(sys.argv[1])
-    else:
-        target_date = date.today() - timedelta(days=1)
+_SPORT_CONFIGS = [
+    ("mlb", "baseball", "mlb", "MLB ⚾"),
+    ("nhl", "hockey",   "nhl", "NHL 🏒"),
+    ("nba", "basketball","nba","NBA 🏀"),
+    ("nfl", "football", "nfl", "NFL 🏈"),
+]
 
-    print(f"Generating box scores for {target_date.isoformat()} ...")
+_GAME_FETCHERS = {
+    "mlb": mlb_games, "nhl": nhl_games, "nba": nba_games, "nfl": nfl_games,
+}
+_GAME_RENDERERS = {
+    "mlb": render_mlb_game, "nhl": render_nhl_game,
+    "nba": render_nba_game, "nfl": render_nfl_game,
+}
+_STANDINGS_FETCHERS = {
+    "mlb": mlb_standings, "nhl": nhl_standings,
+    "nba": nba_standings, "nfl": nfl_standings,
+}
+_STANDINGS_RENDERERS = {
+    "mlb": render_mlb_standings, "nhl": render_nhl_standings,
+    "nba": render_nba_standings, "nfl": render_nfl_standings,
+}
 
+
+def _generate_page(target_date: date, preview: bool = False):
+    label = "preview" if preview else "box scores"
+    print(f"Generating {label} for {target_date.isoformat()} ...")
     sports_data = {}
-
-    print("  Fetching MLB...")
-    mlb_g = mlb_games(target_date)
-    mlb_s = mlb_standings(target_date)
-    games_html = "".join(render_mlb_game(g) for g in mlb_g)
-    sports_data["mlb"] = render_sport_section("mlb", "MLB ⚾", games_html, render_mlb_standings(mlb_s))
-    print(f"    {len(mlb_g)} games")
-
-    print("  Fetching NHL...")
-    nhl_g = nhl_games(target_date)
-    nhl_s = nhl_standings(target_date)
-    games_html = "".join(render_nhl_game(g) for g in nhl_g)
-    sports_data["nhl"] = render_sport_section("nhl", "NHL 🏒", games_html, render_nhl_standings(nhl_s))
-    print(f"    {len(nhl_g)} games")
-
-    print("  Fetching NBA...")
-    nba_g = nba_games(target_date)
-    nba_s = nba_standings(target_date)
-    games_html = "".join(render_nba_game(g) for g in nba_g)
-    sports_data["nba"] = render_sport_section("nba", "NBA 🏀", games_html, render_nba_standings(nba_s))
-    print(f"    {len(nba_g)} games")
-
-    print("  Fetching NFL...")
-    nfl_g = nfl_games(target_date)
-    nfl_s = nfl_standings(target_date)
-    games_html = "".join(render_nfl_game(g) for g in nfl_g)
-    sports_data["nfl"] = render_sport_section("nfl", "NFL 🏈", games_html, render_nfl_standings(nfl_s))
-    print(f"    {len(nfl_g)} games")
+    for key, sport, league, tab_label in _SPORT_CONFIGS:
+        print(f"  Fetching {key.upper()}...")
+        if preview:
+            games = _preview_games(sport, league, target_date)
+            games_html = "".join(render_preview_game(g) for g in games)
+            no_games_msg = "No games scheduled."
+        else:
+            games = _GAME_FETCHERS[key](target_date)
+            games_html = "".join(_GAME_RENDERERS[key](g) for g in games)
+            no_games_msg = "No completed games."
+        standings = _STANDINGS_FETCHERS[key](target_date)
+        standings_html = _STANDINGS_RENDERERS[key](standings)
+        sports_data[key] = render_sport_section(key, tab_label, games_html, standings_html, no_games_msg)
+        print(f"    {len(games)} games")
 
     html = build_page(target_date, sports_data)
-
     os.makedirs("boxscores", exist_ok=True)
     out_path = f"boxscores/{target_date.strftime('%Y%m%d')}.html"
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
-
     print(f"  Written: {out_path}")
+
+
+def main():
+    if len(sys.argv) > 1:
+        _generate_page(date.fromisoformat(sys.argv[1]))
+    else:
+        _generate_page(date.today() - timedelta(days=1))
+        _generate_page(date.today(), preview=True)
 
 
 if __name__ == "__main__":
