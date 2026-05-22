@@ -7,6 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
+@font-face {
+  font-family: "CloisterBlack";
+  src: url("../fonts/CloisterBlack.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -14,7 +21,7 @@
   --text: #111;
   --border: #111;
   --border-light: #bbb;
-  --header-bg: #111;
+  --header-bg: #111111d6;
   --header-fg: #f9f7f1;
   --row-alt: #eeeae0;
   --subhead-bg: #ddd;
@@ -54,10 +61,11 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 .site-title {
+  font-family: "CloisterBlack", serif;
   font-size: 38px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  text-transform: uppercase;
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
   line-height: 1;
 }
 .page-date {
@@ -310,15 +318,15 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
     </div>
   </nav>
   <div class="sport-tabs">
-    <button class="sport-tab active" data-sport="mlb">MLB ⚾</button><button class="sport-tab" data-sport="nhl">NHL 🏒</button><button class="sport-tab" data-sport="nba">NBA 🏀</button><button class="sport-tab" data-sport="nfl">NFL 🏈</button>
+    <button class="sport-tab active" data-sport="mlb">MLB</button><button class="sport-tab" data-sport="nhl">NHL</button><button class="sport-tab" data-sport="nba">NBA</button><button class="sport-tab" data-sport="nfl">NFL</button>
   </div>
   
   <div class="sport-section" data-sport="mlb">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">MLB ⚾ — Box Scores</div>
+        <div class="section-title">MLB — Box Scores</div>
         <div class="games-grid">
-          <div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Cleveland Guardians</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">Philadelphia Phillies</span><span class="team-score">0</span></div><div class="game-meta">Top 4th</div><div class="game-meta">Citizens Bank Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Tampa Bay Rays</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">New York Yankees</span><span class="team-score">0</span></div><div class="game-meta">End 1st</div><div class="game-meta">Yankee Stadium</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Pittsburgh Pirates</span><span class="team-score">1</span></div><div class="game-matchup"><span class="team-name">Toronto Blue Jays</span><span class="team-score">0</span></div><div class="game-meta">End 1st</div><div class="game-meta">Rogers Centre</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Minnesota Twins</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">Boston Red Sox</span><span class="team-score">4</span></div><div class="game-meta">Top 2nd</div><div class="game-meta">Fenway Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">New York Mets</span><span class="team-score">1</span></div><div class="game-matchup"><span class="team-name">Miami Marlins</span><span class="team-score">0</span></div><div class="game-meta">Top 2nd</div><div class="game-meta">loanDepot park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Detroit Tigers</span><span class="team-score">1</span></div><div class="game-matchup"><span class="team-name">Baltimore Orioles</span><span class="team-score">0</span></div><div class="game-meta">Bot 1st</div><div class="game-meta">Oriole Park at Camden Yards</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Washington Nationals</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">Atlanta Braves</span><span class="team-score">0</span></div><div class="game-meta">End 1st</div><div class="game-meta">Truist Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Los Angeles Dodgers</span></div><div class="game-matchup"><span class="team-name">Milwaukee Brewers</span></div><div class="game-meta">5/22 - 7:40 PM EDT</div><div class="game-meta">American Family Field</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Seattle Mariners</span></div><div class="game-matchup"><span class="team-name">Kansas City Royals</span></div><div class="game-meta">5/22 - 7:40 PM EDT</div><div class="game-meta">Kauffman Stadium</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Texas Rangers</span></div><div class="game-matchup"><span class="team-name">Los Angeles Angels</span></div><div class="game-meta">5/22 - 9:38 PM EDT</div><div class="game-meta">Angel Stadium</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Athletics</span></div><div class="game-matchup"><span class="team-name">San Diego Padres</span></div><div class="game-meta">5/22 - 9:40 PM EDT</div><div class="game-meta">Petco Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Colorado Rockies</span></div><div class="game-matchup"><span class="team-name">Arizona Diamondbacks</span></div><div class="game-meta">5/22 - 9:40 PM EDT</div><div class="game-meta">Chase Field</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Chicago White Sox</span></div><div class="game-matchup"><span class="team-name">San Francisco Giants</span></div><div class="game-meta">5/22 - 10:15 PM EDT</div><div class="game-meta">Oracle Park</div></div></div>
+          <div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Cleveland Guardians</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">Philadelphia Phillies</span><span class="team-score">0</span></div><div class="game-meta">Bot 5th</div><div class="game-meta">Citizens Bank Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Tampa Bay Rays</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">New York Yankees</span><span class="team-score">0</span></div><div class="game-meta">End 2nd</div><div class="game-meta">Yankee Stadium</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Pittsburgh Pirates</span><span class="team-score">1</span></div><div class="game-matchup"><span class="team-name">Toronto Blue Jays</span><span class="team-score">0</span></div><div class="game-meta">Top 3rd</div><div class="game-meta">Rogers Centre</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Minnesota Twins</span><span class="team-score">3</span></div><div class="game-matchup"><span class="team-name">Boston Red Sox</span><span class="team-score">4</span></div><div class="game-meta">Bot 2nd</div><div class="game-meta">Fenway Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">New York Mets</span><span class="team-score">1</span></div><div class="game-matchup"><span class="team-name">Miami Marlins</span><span class="team-score">1</span></div><div class="game-meta">Bot 2nd</div><div class="game-meta">loanDepot park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Detroit Tigers</span><span class="team-score">1</span></div><div class="game-matchup"><span class="team-name">Baltimore Orioles</span><span class="team-score">0</span></div><div class="game-meta">Top 3rd</div><div class="game-meta">Oriole Park at Camden Yards</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Washington Nationals</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">Atlanta Braves</span><span class="team-score">0</span></div><div class="game-meta">Mid 3rd</div><div class="game-meta">Truist Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Los Angeles Dodgers</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">Milwaukee Brewers</span><span class="team-score">0</span></div><div class="game-meta">Top 1st</div><div class="game-meta">American Family Field</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Seattle Mariners</span><span class="team-score">0</span></div><div class="game-matchup"><span class="team-name">Kansas City Royals</span><span class="team-score">0</span></div><div class="game-meta">Top 1st</div><div class="game-meta">Kauffman Stadium</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Texas Rangers</span></div><div class="game-matchup"><span class="team-name">Los Angeles Angels</span></div><div class="game-meta">5/22 - 9:38 PM EDT</div><div class="game-meta">Angel Stadium</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Athletics</span></div><div class="game-matchup"><span class="team-name">San Diego Padres</span></div><div class="game-meta">5/22 - 9:40 PM EDT</div><div class="game-meta">Petco Park</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Colorado Rockies</span></div><div class="game-matchup"><span class="team-name">Arizona Diamondbacks</span></div><div class="game-meta">5/22 - 9:40 PM EDT</div><div class="game-meta">Chase Field</div></div></div><div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Chicago White Sox</span></div><div class="game-matchup"><span class="team-name">San Francisco Giants</span></div><div class="game-meta">5/22 - 10:15 PM EDT</div><div class="game-meta">Oracle Park</div></div></div>
         </div>
       </div>
       <div class="sidebar">
@@ -330,7 +338,7 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
   <div class="sport-section" data-sport="nhl">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">NHL 🏒 — Box Scores</div>
+        <div class="section-title">NHL — Box Scores</div>
         <div class="games-grid">
           <div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Vegas Golden Knights</span></div><div class="game-matchup"><span class="team-name">Colorado Avalanche</span></div><div class="game-meta">5/22 - 8:00 PM EDT</div><div class="game-meta">Ball Arena</div></div></div>
         </div>
@@ -344,7 +352,7 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
   <div class="sport-section" data-sport="nba">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">NBA 🏀 — Box Scores</div>
+        <div class="section-title">NBA — Box Scores</div>
         <div class="games-grid">
           <div class="game-box"><div class="game-header"><div class="game-matchup"><span class="team-name">Oklahoma City Thunder</span></div><div class="game-matchup"><span class="team-name">San Antonio Spurs</span></div><div class="game-meta">5/22 - 8:30 PM EDT</div><div class="game-meta">Frost Bank Center</div></div></div>
         </div>
@@ -358,7 +366,7 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
   <div class="sport-section" data-sport="nfl">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">NFL 🏈 — Box Scores</div>
+        <div class="section-title">NFL — Box Scores</div>
         <div class="games-grid">
           <p class="no-games">No games scheduled.</p>
         </div>

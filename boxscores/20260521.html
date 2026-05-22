@@ -7,6 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
+@font-face {
+  font-family: "CloisterBlack";
+  src: url("../fonts/CloisterBlack.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -14,7 +21,7 @@
   --text: #111;
   --border: #111;
   --border-light: #bbb;
-  --header-bg: #111;
+  --header-bg: #111111d6;
   --header-fg: #f9f7f1;
   --row-alt: #eeeae0;
   --subhead-bg: #ddd;
@@ -54,10 +61,11 @@ a:hover { text-decoration: underline; }
   text-align: center;
 }
 .site-title {
+  font-family: "CloisterBlack", serif;
   font-size: 38px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  text-transform: uppercase;
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
   line-height: 1;
 }
 .page-date {
@@ -310,13 +318,13 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
     </div>
   </nav>
   <div class="sport-tabs">
-    <button class="sport-tab active" data-sport="mlb">MLB ⚾</button><button class="sport-tab" data-sport="nhl">NHL 🏒</button><button class="sport-tab" data-sport="nba">NBA 🏀</button><button class="sport-tab" data-sport="nfl">NFL 🏈</button>
+    <button class="sport-tab active" data-sport="mlb">MLB</button><button class="sport-tab" data-sport="nhl">NHL</button><button class="sport-tab" data-sport="nba">NBA</button><button class="sport-tab" data-sport="nfl">NFL</button>
   </div>
   
   <div class="sport-section" data-sport="mlb">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">MLB ⚾ — Box Scores</div>
+        <div class="section-title">MLB — Box Scores</div>
         <div class="games-grid">
           
     <div class="game-box">
@@ -554,7 +562,7 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
   <div class="sport-section" data-sport="nhl">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">NHL 🏒 — Box Scores</div>
+        <div class="section-title">NHL — Box Scores</div>
         <div class="games-grid">
           
     <div class="game-box">
@@ -590,7 +598,7 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
   <div class="sport-section" data-sport="nba">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">NBA 🏀 — Box Scores</div>
+        <div class="section-title">NBA — Box Scores</div>
         <div class="games-grid">
           
     <div class="game-box">
@@ -626,7 +634,7 @@ table.standings tr:nth-child(even) td { background: var(--row-alt); }
   <div class="sport-section" data-sport="nfl">
     <div class="main">
       <div class="games-col">
-        <div class="section-title">NFL 🏈 — Box Scores</div>
+        <div class="section-title">NFL — Box Scores</div>
         <div class="games-grid">
           <p class="no-games">No completed games.</p>
         </div>
