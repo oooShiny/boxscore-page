@@ -1266,6 +1266,10 @@ def render_sport_section(sport_key, sport_label, games_html, standings_html, no_
 def build_page(target_date: date, sports_data: dict):
     prev_date = target_date - timedelta(days=1)
     next_date = target_date + timedelta(days=1)
+    next_link = (
+        f'<a href="{next_date.strftime("%Y%m%d")}.html">{next_date.strftime("%b %-d")} &rarr;</a>'
+        if target_date < date.today() else ""
+    )
 
     tabs = ""
     sections = ""
@@ -1307,7 +1311,7 @@ def build_page(target_date: date, sports_data: dict):
     <div style="display:flex;gap:6px">
       <button id="dark-toggle">Dark Mode</button>
       <a href="{date.today().strftime('%Y%m%d')}.html">Today</a>
-      <a href="{next_date.strftime('%Y%m%d')}.html">{next_date.strftime('%b %-d')} &rarr;</a>
+      {next_link}
     </div>
   </nav>
   <div class="sport-tabs">
