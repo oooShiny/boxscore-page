@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Box Scores — March 12, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+@font-face {
+  font-family: "CloisterBlack";
+  src: url("../fonts/CloisterBlack.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f9f7f1;
+  --text: #111;
+  --border: #111;
+  --border-light: #bbb;
+  --header-bg: #111111d6;
+  --header-fg: #f9f7f1;
+  --row-alt: #eeeae0;
+  --subhead-bg: #ddd;
+  --sport-tag-bg: #111;
+  --sport-tag-fg: #f9f7f1;
+  --font: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+}
+
+body.dark {
+  --bg: #121212;
+  --text: #e0e0e0;
+  --border: #555;
+  --border-light: #333;
+  --header-bg: #1e1e1e;
+  --header-fg: #e0e0e0;
+  --row-alt: #1a1a1a;
+  --subhead-bg: #2a2a2a;
+  --sport-tag-bg: #2a2a2a;
+  --sport-tag-fg: #e0e0e0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── page header ── */
+.page-header {
+  border-bottom: 3px double var(--border);
+  padding: 10px 16px 8px;
+  text-align: center;
+}
+.site-title {
+  font-family: "CloisterBlack", serif;
+  font-size: 38px;
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1;
+}
+.page-date {
+  font-size: 15px;
+  letter-spacing: 2px;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  gap: 8px;
+}
+.nav-row a, .nav-row button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 2px 8px;
+}
+.nav-row a:hover, .nav-row button:hover { background: var(--border); color: var(--bg); text-decoration: none; }
+
+.sport-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.2em;
+  justify-content: center;
+}
+.sport-tab {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+.sport-tab.active {
+  border-bottom-color: var(--border);
+}
+
+/* ── main layout ── */
+.main {
+  display: flex;
+  gap: 0;
+}
+.games-col {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 16px;
+  border-right: 1px solid var(--border-light);
+}
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  padding: 12px 12px;
+}
+
+/* ── section title ── */
+.section-title {
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 3px;
+  margin-bottom: 10px;
+  font-family: serif;   
+}
+.subsection-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--subhead-bg);
+  padding: 2px 6px;
+  margin: 10px 0 4px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── games grid ── */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.game-box {
+  border: 1px solid var(--border);
+}
+.game-header {
+  background: var(--header-bg);
+  color: var(--header-fg);
+  display: grid;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+.game-matchup {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+.team-name { flex: 1; }
+.team-score { font-size: 16px; font-weight: 900; padding-left: 8px; }
+.team-score.winner { font-size: 18px; }
+.game-meta { font-size: 10px; opacity: 0.8; margin-top: 1px; }
+
+/* ── line score ── */
+.linescore-wrap { overflow-x: auto; }
+table.linescore {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+table.linescore th, table.linescore td {
+  text-align: right;
+  padding: 2px 4px;
+  border-left: 1px solid var(--border-light);
+  white-space: nowrap;
+  min-width: 18px;
+}
+table.linescore th:first-child, table.linescore td:first-child {
+  text-align: left;
+  border-left: none;
+  font-weight: 700;
+  min-width: 90px;
+}
+table.linescore thead th { background: var(--subhead-bg); font-weight: 700; }
+table.linescore .rhe { border-left: 2px solid var(--border); font-weight: 700; }
+table.linescore .total { font-weight: 900; }
+
+/* ── stat tables ── */
+table.stats {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-top: 4px;
+}
+table.stats th {
+  background: var(--subhead-bg);
+  padding: 2px 4px;
+  text-align: right;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+table.stats th:first-child { text-align: left; }
+table.stats td {
+  padding: 2px 4px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light);
+}
+table.stats td:first-child { text-align: left; }
+table.stats tr:nth-child(even) td { background: var(--row-alt); }
+table.stats tr.total td { font-weight: 700; border-top: 1px solid var(--border); }
+table.stats tr.total td:first-child { font-weight: 900; }
+
+/* ── standings ── */
+.standings-block { margin-bottom: 16px; }
+table.standings {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+table.standings th {
+  background: var(--header-bg);
+  color: var(--header-fg);
+  padding: 2px 4px;
+  text-align: right;
+  font-size: 10px;
+  font-weight: 700;
+}
+table.standings th:first-child { text-align: left; }
+table.standings td {
+  padding: 2px 4px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light);
+}
+table.standings td:first-child { text-align: left; font-weight: 600; }
+table.standings tr:nth-child(even) td { background: var(--row-alt); }
+.div-title {
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 4px 2px;
+  border-top: 2px solid var(--border);
+  margin-top: 8px;
+}
+.div-title:first-child { border-top: 1px solid var(--border); margin-top: 0; }
+
+/* ── sport section ── */
+.sport-section { display: none; }
+.sport-section.active { display: block; }
+
+/* ── no games ── */
+.no-games { color: #888; font-style: italic; padding: 20px 0; }
+
+/* ── sport badge in multi-sport view ── */
+.sport-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 1px 5px;
+  background: var(--sport-tag-bg);
+  color: var(--sport-tag-fg);
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+@media (max-width: 900px) {
+  .main { flex-direction: column; }
+  .sidebar { width: 100%; border-top: 2px solid var(--border); }
+  .games-col { border-right: none; }
+  .games-grid { grid-template-columns: 1fr; }
+  .site-title { font-size: 26px; }
+}
+
+@media print {
+  .nav-row, .sport-tabs, body { font-size: 10px; }
+  .sport-section { display: block !important; }
+  .page-header { border-bottom: 2px solid #000; }
+}
+</style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="site-title">Box Scores</div>
+    <div class="page-date">MARCH 12, 2026</div>
+  </header>
+  <nav class="nav-row">
+    <a href="20260311.html">&larr; Mar 11</a>
+    <div style="display:flex;gap:6px">
+      <button id="dark-toggle">Dark Mode</button>
+      <a href="20260522.html">Today</a>
+      <a href="20260313.html">Mar 13 &rarr;</a>
+    </div>
+  </nav>
+  <div class="sport-tabs">
+    <button class="sport-tab active" data-sport="mlb">MLB</button><button class="sport-tab" data-sport="nhl">NHL</button><button class="sport-tab" data-sport="nba">NBA</button><button class="sport-tab" data-sport="nfl">NFL</button>
+  </div>
+  
+  <div class="sport-section" data-sport="mlb">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">MLB — Box Scores</div>
+        <div class="games-grid">
+          
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">New York Yankees</span><span class="team-score winner">4</span></div>
+        <div class="game-matchup"><span class="team-name">Detroit Tigers</span><span class="team-score">3</span></div>
+        <div class="game-meta">Publix Field at Joker Marchant Stadium</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="total">New York Yankees</td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td>
+          <td class="rhe total">4</td><td class="rhe">5</td><td class="rhe">0</td></tr>
+        <tr><td class="">Detroit Tigers</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>0</td>
+          <td class="rhe total">3</td><td class="rhe">4</td><td class="rhe">1</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">New York Yankees Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Ben Rice <em>1B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>.280</td></tr><tr><td>Braden Shewmake <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.125</td></tr><tr><td>Jasson Dominguez <em>LF</em></td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Marco Luciano <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>J.C. Escarra <em>C</em></td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.217</td></tr><tr><td>Core Jackson <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Paul DeJong <em>3B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>.174</td></tr><tr><td>Miguel Palma <em>C</em></td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.167</td></tr><tr><td>Spencer Jones <em>RF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.333</td></tr><tr><td>Kaeden Kent <em>SS</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.429</td></tr><tr><td>Max Schuemann <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.353</td></tr><tr><td>Nick Torres <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Seth Brown <em>LF</em></td><td>2</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>.217</td></tr><tr><td>Jacob Morales <em>LF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>George Lombard Jr. <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.185</td></tr><tr><td>Jace Avina <em>LF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.286</td></tr><tr><td>Yanquiel Fernandez <em>RF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.167</td></tr><tr><td>Joshua Moylan <em>1B</em></td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>.000</td></tr></tbody></table>
+        <div class="subsection-title">Detroit Tigers Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Kerry Carpenter <em>RF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.222</td></tr><tr><td>Bennett Lee <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Matt Vierling <em>CF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Corey Julks <em>LF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.368</td></tr><tr><td>Colt Keith <em>3B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.238</td></tr><tr><td>Hunter Dobbins <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Samuel Gil <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Spencer Torkelson <em>1B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.182</td></tr><tr><td>Andrew Jenkins <em>1B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Roberto Campos <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Dillon Dingler <em>C</em></td><td>2</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.231</td></tr><tr><td>Zach McKinstry <em>2B</em></td><td>2</td><td>1</td><td>1</td><td>2</td><td>0</td><td>1</td><td>.294</td></tr><tr><td>Zachary Macdonald <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Javier Baez <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Brett Callahan <em>LF</em></td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.500</td></tr><tr><td>Trei Cruz <em>CF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.222</td></tr><tr><td>Max Anderson <em>2B</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.259</td></tr><tr><td>John Peck <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.318</td></tr><tr><td>Jude Warwick <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>.000</td></tr></tbody></table>
+      
+        <div class="subsection-title">New York Yankees Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Will Warren</td><td>6.0</td><td>2</td><td>2</td><td>2</td><td>0</td><td>2</td><td>1.65</td></tr><tr><td>Cade Winquest</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>5.68</td></tr><tr><td>Angel Chivilli</td><td>1.0</td><td>2</td><td>1</td><td>1</td><td>0</td><td>2</td><td>14.29</td></tr><tr><td>Bradley Hanner</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>9.00</td></tr></tbody></table>
+        <div class="subsection-title">Detroit Tigers Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Justin Verlander</td><td>3.1</td><td>4</td><td>3</td><td>3</td><td>2</td><td>5</td><td>8.44</td></tr><tr><td>Brant Hurter</td><td>1.2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>4.76</td></tr><tr><td>Kenley Jansen</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0.00</td></tr><tr><td>Kyle Finnegan</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4.91</td></tr><tr><td>Burch Smith</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>3.60</td></tr><tr><td>Johan Simon</td><td>0.2</td><td>1</td><td>1</td><td>1</td><td>1</td><td>2</td><td>9.00</td></tr><tr><td>Logan Berrier</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0.00</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Boston Red Sox</span><span class="team-score">5</span></div>
+        <div class="game-matchup"><span class="team-name">Minnesota Twins</span><span class="team-score winner">8</span></div>
+        <div class="game-meta">Lee Health Sports Complex</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Boston Red Sox</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>2</td><td>0</td>
+          <td class="rhe total">5</td><td class="rhe">11</td><td class="rhe">1</td></tr>
+        <tr><td class="total">Minnesota Twins</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>0</td><td>4</td><td></td>
+          <td class="rhe total">8</td><td class="rhe">12</td><td class="rhe">0</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Boston Red Sox Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Caleb Durbin <em>3B</em></td><td>4</td><td>1</td><td>2</td><td>1</td><td>0</td><td>0</td><td>.304</td></tr><tr><td>Nathan Hickey <em>C</em></td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.182</td></tr><tr><td>Skylar King <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Trevor Story <em>SS</em></td><td>4</td><td>1</td><td>3</td><td>0</td><td>0</td><td>0</td><td>.400</td></tr><tr><td>Tyler McDonough <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Marcelo Mayer <em>2B</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.200</td></tr><tr><td>Corey Rosier <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Isiah Kiner-Falefa <em>2B</em></td><td>4</td><td>0</td><td>2</td><td>2</td><td>0</td><td>0</td><td>.409</td></tr><tr><td>Connor Wong <em>C</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.087</td></tr><tr><td>Nathan Baez <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.500</td></tr><tr><td>Andruw Monasterio <em>SS</em></td><td>4</td><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>.348</td></tr><tr><td>Kristian Campbell <em>2B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.194</td></tr><tr><td>Nick Sogard <em>3B</em></td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.097</td></tr><tr><td>Braiden Ward <em>CF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.419</td></tr><tr><td>Vinny Capra <em>3B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.050</td></tr><tr><td>Allan Castro <em>CF</em></td><td>3</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.310</td></tr><tr><td>Mikey Romero <em>SS</em></td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.294</td></tr></tbody></table>
+        <div class="subsection-title">Minnesota Twins Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Royce Lewis <em>3B</em></td><td>4</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.143</td></tr><tr><td>Luke Keaschall <em>2B</em></td><td>4</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>.375</td></tr><tr><td>Alex Jackson <em>C</em></td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>.100</td></tr><tr><td>Josh Bell <em>DH</em></td><td>3</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>.393</td></tr><tr><td>Rayne Doncon <em>3B</em></td><td>2</td><td>0</td><td>2</td><td>3</td><td>0</td><td>0</td><td>.667</td></tr><tr><td>Ryan Jeffers <em>C</em></td><td>4</td><td>0</td><td>2</td><td>2</td><td>0</td><td>1</td><td>.179</td></tr><tr><td>Kyler Fedko <em>LF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.063</td></tr><tr><td>Victor Caratini <em>C</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.174</td></tr><tr><td>Caden Kendle <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Trevor Larnach <em>LF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.188</td></tr><tr><td>Kala'i Rosario <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.364</td></tr><tr><td>Tristan Gray <em>3B</em></td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Austin Martin <em>LF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.231</td></tr><tr><td>Eric Wagaman <em>1B</em></td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.222</td></tr><tr><td>Brooks Lee <em>SS</em></td><td>3</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>.300</td></tr><tr><td>Maddux Houghton <em>CF</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Orlando Arcia <em>SS</em></td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>0</td><td>.250</td></tr><tr><td>Tanner Schobel <em>2B</em></td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.167</td></tr></tbody></table>
+      
+        <div class="subsection-title">Boston Red Sox Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Connelly Early</td><td>3.2</td><td>5</td><td>2</td><td>1</td><td>1</td><td>1</td><td>2.25</td></tr><tr><td>Ryan Watson</td><td>1.1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7.36</td></tr><tr><td>Kyle Keller</td><td>1.0</td><td>2</td><td>2</td><td>2</td><td>0</td><td>1</td><td>6.35</td></tr><tr><td>Noah Song</td><td>1.0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Jacob Webb</td><td>0.1</td><td>1</td><td>3</td><td>3</td><td>2</td><td>1</td><td>13.50</td></tr><tr><td>Reidis Sena</td><td>0.2</td><td>1</td><td>1</td><td>1</td><td>2</td><td>1</td><td>4.50</td></tr></tbody></table>
+        <div class="subsection-title">Minnesota Twins Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Bailey Ober</td><td>2.2</td><td>5</td><td>1</td><td>1</td><td>1</td><td>2</td><td>1.93</td></tr><tr><td>Christian Becerra</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr><tr><td>Liam Hendriks</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2.25</td></tr><tr><td>Cole Sands</td><td>1.0</td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>6.00</td></tr><tr><td>Kody Funderburk</td><td>1.2</td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1.59</td></tr><tr><td>Eric Orze</td><td>1.0</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>5.40</td></tr><tr><td>Grant Hartwig</td><td>1.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7.11</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Toronto Blue Jays</span><span class="team-score">5</span></div>
+        <div class="game-matchup"><span class="team-name">Philadelphia Phillies</span><span class="team-score winner">8</span></div>
+        <div class="game-meta">BayCare Ballpark</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Toronto Blue Jays</td><td>1</td><td>0</td><td>0</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td></td>
+          <td class="rhe total">5</td><td class="rhe">10</td><td class="rhe">0</td></tr>
+        <tr><td class="total">Philadelphia Phillies</td><td>1</td><td>3</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td>
+          <td class="rhe total">8</td><td class="rhe">6</td><td class="rhe">0</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Toronto Blue Jays Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>George Springer <em>DH</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.188</td></tr><tr><td>Davis Schneider <em>LF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.125</td></tr><tr><td>Carlos Mendoza <em>3B</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.438</td></tr><tr><td>Tyler Heineman <em>C</em></td><td>2</td><td>3</td><td>2</td><td>1</td><td>1</td><td>0</td><td>.333</td></tr><tr><td>Aaron Parker <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.286</td></tr><tr><td>Daulton Varsho <em>CF</em></td><td>3</td><td>0</td><td>1</td><td>3</td><td>0</td><td>0</td><td>.393</td></tr><tr><td>Jonatan Clase <em>LF</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.300</td></tr><tr><td>Leo Jimenez <em>3B</em></td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.308</td></tr><tr><td>Rafael Lantigua <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.440</td></tr><tr><td>Josh Kasevich <em>SS</em></td><td>3</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Arjun Nimmala <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.250</td></tr><tr><td>RJ Schreck <em>LF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.200</td></tr><tr><td>Yohendrick Pinango <em>LF</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.130</td></tr><tr><td>Riley Tirotta <em>3B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.192</td></tr><tr><td>Sean Keys <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.208</td></tr><tr><td>Josh Rivera <em>SS</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.235</td></tr><tr><td>Charles Mcadoo <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.240</td></tr></tbody></table>
+        <div class="subsection-title">Philadelphia Phillies Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Trea Turner <em>SS</em></td><td>4</td><td>1</td><td>2</td><td>2</td><td>0</td><td>0</td><td>.167</td></tr><tr><td>Bryan Rincon <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.238</td></tr><tr><td>Brandon Marsh <em>LF</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.158</td></tr><tr><td>Dylan Campbell <em>CF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.125</td></tr><tr><td>Alec Bohm <em>3B</em></td><td>4</td><td>1</td><td>1</td><td>2</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Aroon Escobar <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.105</td></tr><tr><td>Adolis Garcia <em>RF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.182</td></tr><tr><td>Bryson Stott <em>2B</em></td><td>3</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.444</td></tr><tr><td>Otto Kemp <em>LF</em></td><td>1</td><td>2</td><td>0</td><td>0</td><td>2</td><td>1</td><td>.241</td></tr><tr><td>Austin Murr <em>LF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Pedro Leon <em>RF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.261</td></tr><tr><td>Justin Crawford <em>CF</em></td><td>3</td><td>2</td><td>2</td><td>0</td><td>0</td><td>1</td><td>.250</td></tr><tr><td>Felix Reyes <em>LF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.316</td></tr><tr><td>Dylan Moore <em>CF</em></td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>.200</td></tr><tr><td>Caleb Ricketts <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Rafael Marchan <em>C</em></td><td>2</td><td>0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>.273</td></tr><tr><td>Carson DeMartini <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.125</td></tr></tbody></table>
+      
+        <div class="subsection-title">Toronto Blue Jays Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>C.J. Van Eyk</td><td>2.1</td><td>4</td><td>6</td><td>6</td><td>2</td><td>1</td><td>10.13</td></tr><tr><td>Angel Bastardo</td><td>0.2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>0</td><td>4.15</td></tr><tr><td>Braydon Fisher</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>2.08</td></tr><tr><td>Mason Fluharty</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>1.93</td></tr><tr><td>Jesse Hahn</td><td>2.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7.20</td></tr><tr><td>Josh Fleming</td><td>0.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2.25</td></tr></tbody></table>
+        <div class="subsection-title">Philadelphia Phillies Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Jesus Luzardo</td><td>3.2</td><td>5</td><td>3</td><td>3</td><td>1</td><td>3</td><td>4.05</td></tr><tr><td>Chase Shugart</td><td>1.1</td><td>2</td><td>2</td><td>2</td><td>1</td><td>0</td><td>4.05</td></tr><tr><td>Zach Pop</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>6.75</td></tr><tr><td>Genesis Cabrera</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1.80</td></tr><tr><td>Jonathan Hernandez</td><td>1.0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>6.35</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">New York Mets</span><span class="team-score">1</span></div>
+        <div class="game-matchup"><span class="team-name">St. Louis Cardinals</span><span class="team-score winner">3</span></div>
+        <div class="game-meta">Roger Dean Chevrolet Stadium</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">New York Mets</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="rhe total">1</td><td class="rhe">5</td><td class="rhe">0</td></tr>
+        <tr><td class="total">St. Louis Cardinals</td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td>
+          <td class="rhe total">3</td><td class="rhe">8</td><td class="rhe">0</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">New York Mets Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Marcus Semien <em>2B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.167</td></tr><tr><td>Jacob Reimer <em>3B</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.267</td></tr><tr><td>Jorge Polanco <em>1B</em></td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>.333</td></tr><tr><td>JT Schwartz <em>1B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1.000</td></tr><tr><td>Bo Bichette <em>3B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.227</td></tr><tr><td>Vladi Gomez <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Luis Robert Jr. <em>CF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Matt Rudick <em>LF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.250</td></tr><tr><td>Brett Baty <em>3B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.400</td></tr><tr><td>D'Andre Smith <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Ben Rortvedt <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Francisco Alvarez <em>C</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>.429</td></tr><tr><td>Mike Tauchman <em>RF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.250</td></tr><tr><td>Hayden Senger <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.176</td></tr><tr><td>Tyrone Taylor <em>CF</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.300</td></tr><tr><td>Ryan Clifford <em>1B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.053</td></tr><tr><td>Ronny Mauricio <em>SS</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.292</td></tr><tr><td>Yonny Hernandez <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr></tbody></table>
+        <div class="subsection-title">St. Louis Cardinals Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Masyn Winn <em>SS</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.143</td></tr><tr><td>Jeremy Rivas <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.227</td></tr><tr><td>Alec Burleson <em>1B</em></td><td>2</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>.286</td></tr><tr><td>Blaze Jordan <em>1B</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.071</td></tr><tr><td>Nelson Velazquez <em>OF</em></td><td>4</td><td>1</td><td>1</td><td>2</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Alex Birge <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Nolan Gorman <em>3B</em></td><td>2</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td><td>.222</td></tr><tr><td>Ramon Mendoza <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.273</td></tr><tr><td>Jordan Walker <em>RF</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>.200</td></tr><tr><td>Yohel Pozo <em>C</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Matt Koperniak <em>LF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.143</td></tr><tr><td>Nathan Church <em>LF</em></td><td>3</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.273</td></tr><tr><td>Brody Moore <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.167</td></tr><tr><td>Jose Fermin <em>LF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.133</td></tr><tr><td>Noah Mendlinger <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Victor Scott II <em>CF</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.174</td></tr><tr><td>Zach Levenson <em>OF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr></tbody></table>
+      
+        <div class="subsection-title">New York Mets Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Sean Manaea</td><td>2.2</td><td>6</td><td>3</td><td>3</td><td>1</td><td>4</td><td>6.35</td></tr><tr><td>Aaron Rozek</td><td>0.1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr><tr><td>Craig Kimbrel</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>2.25</td></tr><tr><td>Luke Weaver</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0.00</td></tr><tr><td>Tobias Myers</td><td>3.0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>2</td><td>1.08</td></tr></tbody></table>
+        <div class="subsection-title">St. Louis Cardinals Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Michael McGreevy</td><td>5.0</td><td>4</td><td>1</td><td>1</td><td>1</td><td>3</td><td>2.70</td></tr><tr><td>Chris Roycroft</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>George Soriano</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0.00</td></tr><tr><td>Matt Pushard</td><td>0.2</td><td>1</td><td>0</td><td>0</td><td>2</td><td>1</td><td>5.79</td></tr><tr><td>Darlin Saladin</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>4.50</td></tr><tr><td>Skylar Hales</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>5.79</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Seattle Mariners</span><span class="team-score">4</span></div>
+        <div class="game-matchup"><span class="team-name">Chicago Cubs</span><span class="team-score winner">7</span></div>
+        <div class="game-meta">Sloan Park</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Seattle Mariners</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0</td>
+          <td class="rhe total">4</td><td class="rhe">6</td><td class="rhe">0</td></tr>
+        <tr><td class="total">Chicago Cubs</td><td>0</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td><td>4</td><td>0</td><td></td>
+          <td class="rhe total">7</td><td class="rhe">10</td><td class="rhe">0</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Seattle Mariners Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Brendan Donovan <em>3B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.417</td></tr><tr><td>Will Wilson <em>3B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.286</td></tr><tr><td>Cole Young <em>2B</em></td><td>3</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.273</td></tr><tr><td>Brock Rodden <em>2B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.435</td></tr><tr><td>Brennen Davis <em>CF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.344</td></tr><tr><td>Aiden Taurek <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Luke Raley <em>RF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.231</td></tr><tr><td>Rhylan Thomas <em>LF</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.444</td></tr><tr><td>Victor Robles <em>RF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.111</td></tr><tr><td>Jakson Reetz <em>C</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.125</td></tr><tr><td>Patrick Wisdom <em>3B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.276</td></tr><tr><td>Carson Taylor <em>1B</em></td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.286</td></tr><tr><td>Michael Arroyo <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.300</td></tr><tr><td>Colin Davis <em>LF</em></td><td>1</td><td>1</td><td>1</td><td>3</td><td>0</td><td>0</td><td>.500</td></tr><tr><td>Leo Rivas <em>3B</em></td><td>3</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>.280</td></tr><tr><td>Austin St. Laurent <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.500</td></tr><tr><td>Andrew Knizner <em>C</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.158</td></tr><tr><td>Jhonny Pereda <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.071</td></tr></tbody></table>
+        <div class="subsection-title">Chicago Cubs Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Michael Busch <em>1B</em></td><td>3</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>.261</td></tr><tr><td>Devin Ortiz <em>3B</em></td><td>2</td><td>0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Nico Hoerner <em>2B</em></td><td>2</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>.263</td></tr><tr><td>Scott Kingery <em>3B</em></td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.188</td></tr><tr><td>Ian Happ <em>LF</em></td><td>3</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1</td><td>.190</td></tr><tr><td>Jose Escobar <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.000</td></tr><tr><td>Dansby Swanson <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.368</td></tr><tr><td>Darlyn De Leon <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Carson Kelly <em>C</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.364</td></tr><tr><td>Owen Ayers <em>C</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Dylan Carlson <em>LF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.360</td></tr><tr><td>Jaylen Palmer <em>OF</em></td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>.000</td></tr><tr><td>Chas McCormick <em>LF</em></td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>2</td><td>.242</td></tr><tr><td>Owen Miller <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.261</td></tr><tr><td>B.J. Murray Jr. <em>3B</em></td><td>3</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Karson Simas <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Jefferson Rojas <em>SS</em></td><td>2</td><td>2</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.235</td></tr><tr><td>Alexey Lumpuy <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr></tbody></table>
+      
+        <div class="subsection-title">Seattle Mariners Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Emerson Hancock</td><td>4.0</td><td>4</td><td>2</td><td>2</td><td>0</td><td>5</td><td>4.76</td></tr><tr><td>Casey Legumina</td><td>1.0</td><td>2</td><td>1</td><td>1</td><td>0</td><td>0</td><td>4.76</td></tr><tr><td>Alex Hoppe</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>14.29</td></tr><tr><td>Josh Simpson</td><td>0.0</td><td>4</td><td>4</td><td>4</td><td>2</td><td>0</td><td>18.00</td></tr><tr><td>Peyton Alford</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>3.38</td></tr><tr><td>Troy Taylor</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>13.50</td></tr></tbody></table>
+        <div class="subsection-title">Chicago Cubs Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Edward Cabrera</td><td>3.2</td><td>4</td><td>1</td><td>1</td><td>0</td><td>3</td><td>1.08</td></tr><tr><td>Grayson Moore</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0.00</td></tr><tr><td>Phil Maton</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>1</td><td>0.00</td></tr><tr><td>Corbin Martin</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>3.60</td></tr><tr><td>Jack Neely</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Tyler Beede</td><td>1.0</td><td>2</td><td>3</td><td>3</td><td>1</td><td>0</td><td>9.00</td></tr><tr><td>Vincent Reilly</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Athletics</span><span class="team-score">6</span></div>
+        <div class="game-matchup"><span class="team-name">Texas Rangers</span><span class="team-score winner">7</span></div>
+        <div class="game-meta">Surprise Stadium</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Athletics</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>1</td><td>1</td><td>0</td>
+          <td class="rhe total">6</td><td class="rhe">12</td><td class="rhe">1</td></tr>
+        <tr><td class="total">Texas Rangers</td><td>0</td><td>6</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td></td>
+          <td class="rhe total">7</td><td class="rhe">7</td><td class="rhe">2</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Athletics Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Jeff McNeil <em>2B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.360</td></tr><tr><td>Brian Serven <em>C</em></td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>.235</td></tr><tr><td>Samuel Gonzalez <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Zack Gelof <em>3B</em></td><td>3</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.429</td></tr><tr><td>Breyson Guedez <em>OF</em></td><td>2</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>1.000</td></tr><tr><td>Max Muncy <em>3B</em></td><td>3</td><td>2</td><td>2</td><td>1</td><td>0</td><td>1</td><td>.419</td></tr><tr><td>Drew Swift <em>3B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.667</td></tr><tr><td>Austin Wynns <em>C</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.304</td></tr><tr><td>Cameron Leary <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.125</td></tr><tr><td>Colby Thomas <em>RF</em></td><td>3</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>.143</td></tr><tr><td>Jared Sprague-Lott <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Leo De Vries <em>SS</em></td><td>3</td><td>0</td><td>2</td><td>1</td><td>0</td><td>1</td><td>.382</td></tr><tr><td>Robert Blandford <em>OF</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Tommy White <em>3B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.435</td></tr><tr><td>Junior Perez <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.160</td></tr><tr><td>Cade Marlowe <em>OF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.294</td></tr><tr><td>Michael Stefanic <em>2B</em></td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>.435</td></tr><tr><td>Henry Bolte <em>CF</em></td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>.382</td></tr><tr><td>Chad Wallach <em>C</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.063</td></tr></tbody></table>
+        <div class="subsection-title">Texas Rangers Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Brandon Nimmo <em>RF</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.167</td></tr><tr><td>Michael Helman <em>CF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.136</td></tr><tr><td>Wyatt Langford <em>LF</em></td><td>3</td><td>1</td><td>2</td><td>3</td><td>0</td><td>1</td><td>.455</td></tr><tr><td>Trevor Hauver <em>RF</em></td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1.000</td></tr><tr><td>Corey Seager <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.238</td></tr><tr><td>Tyler Wade <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.524</td></tr><tr><td>Jake Burger <em>1B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.321</td></tr><tr><td>Jonah Bride <em>3B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.269</td></tr><tr><td>Joc Pederson <em>DH</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.167</td></tr><tr><td>Hector Osorio <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.200</td></tr><tr><td>Evan Carter <em>CF</em></td><td>3</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.261</td></tr><tr><td>Cameron Cauley <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.333</td></tr><tr><td>Josh Smith <em>2B</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.345</td></tr><tr><td>Ezequiel Duran <em>2B</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>2</td><td>0</td><td>.250</td></tr><tr><td>Richie Martin <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.318</td></tr><tr><td>Willie MacIver <em>C</em></td><td>2</td><td>1</td><td>1</td><td>3</td><td>1</td><td>1</td><td>.176</td></tr><tr><td>Marcos Torres <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.111</td></tr><tr><td>Jose Herrera <em>C</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.304</td></tr></tbody></table>
+      
+        <div class="subsection-title">Athletics Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>J.T. Ginn</td><td>4.2</td><td>4</td><td>4</td><td>4</td><td>3</td><td>5</td><td>5.68</td></tr><tr><td>Ryan Magdic</td><td>0.1</td><td>1</td><td>2</td><td>2</td><td>1</td><td>0</td><td>54.00</td></tr><tr><td>Matt Krook</td><td>0.2</td><td>0</td><td>0</td><td>0</td><td>2</td><td>1</td><td>9.00</td></tr><tr><td>Tyler Ferguson</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>5.40</td></tr><tr><td>Joel Kuhnel</td><td>1.0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>2</td><td>2.70</td></tr><tr><td>Wander Suero</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2.45</td></tr></tbody></table>
+        <div class="subsection-title">Texas Rangers Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Jack Leiter</td><td>5.0</td><td>5</td><td>2</td><td>2</td><td>0</td><td>6</td><td>4.50</td></tr><tr><td>Josh Sborz</td><td>1.0</td><td>3</td><td>2</td><td>2</td><td>1</td><td>0</td><td>3.60</td></tr><tr><td>Gavin Collyer</td><td>0.2</td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>2.70</td></tr><tr><td>Aidan Anderson</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1.50</td></tr><tr><td>Ryan Brasier</td><td>1.0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>10.13</td></tr><tr><td>Luis Curvelo</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td><td>3.60</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Colorado Rockies</span><span class="team-score winner">13</span></div>
+        <div class="game-matchup"><span class="team-name">Arizona Diamondbacks</span><span class="team-score">2</span></div>
+        <div class="game-meta">Salt River Fields at Talking Stick</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Colorado Rockies</td><td>0</td><td>0</td><td>0</td><td>1</td><td>3</td><td>8</td><td>0</td><td>0</td><td>1</td>
+          <td class="rhe total">13</td><td class="rhe">11</td><td class="rhe">0</td></tr>
+        <tr><td class="">Arizona Diamondbacks</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="rhe total">2</td><td class="rhe">6</td><td class="rhe">0</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Colorado Rockies Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Jake McCarthy <em>LF</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>2</td><td>.267</td></tr><tr><td>Cole Carrigg <em>1B</em></td><td>2</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.400</td></tr><tr><td>Brenton Doyle <em>CF</em></td><td>3</td><td>3</td><td>2</td><td>2</td><td>1</td><td>0</td><td>.412</td></tr><tr><td>Robert Calaz <em>OF</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.500</td></tr><tr><td>Hunter Goodman <em>C</em></td><td>3</td><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>.111</td></tr><tr><td>Jacob Hinderleider <em>SS</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>TJ Rumfield <em>1B</em></td><td>4</td><td>0</td><td>3</td><td>4</td><td>0</td><td>0</td><td>.367</td></tr><tr><td>Jamison Hobson <em>CF</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Jordan Beck <em>LF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>3</td><td>1</td><td>.273</td></tr><tr><td>Kevin Hidalgo <em>SS</em></td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Kyle Karros <em>3B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.417</td></tr><tr><td>Bryant Betancourt <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Ryan Ritter <em>2B</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.371</td></tr><tr><td>Adael Amador <em>2B</em></td><td>2</td><td>0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>.235</td></tr><tr><td>Nicholas Kent <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.222</td></tr><tr><td>Chad Stevens <em>SS</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.231</td></tr><tr><td>Nicky Lopez <em>2B</em></td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Brett Sullivan <em>C</em></td><td>4</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.480</td></tr><tr><td>Jose Cordova <em>C</em></td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.500</td></tr></tbody></table>
+        <div class="subsection-title">Arizona Diamondbacks Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Jordan Lawlar <em>LF</em></td><td>4</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.323</td></tr><tr><td>Jean Walters <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Tim Tawa <em>LF</em></td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>0</td><td>.267</td></tr><tr><td>Wallace Clark <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.500</td></tr><tr><td>Gabriel Moreno <em>C</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.179</td></tr><tr><td>Brady Counsell <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.500</td></tr><tr><td>James McCann <em>C</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.100</td></tr><tr><td>Matt O'Neill <em>C</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.429</td></tr><tr><td>Luken Baker <em>1B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.267</td></tr><tr><td>Caleb Roberts <em>OF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.000</td></tr><tr><td>Jacob Amaya <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Ivan Melendez <em>3B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.167</td></tr><tr><td>Kristian Robinson <em>LF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.400</td></tr><tr><td>Pedro Catuy <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Gino Groover <em>3B</em></td><td>3</td><td>0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>.316</td></tr><tr><td>Jack Hurley <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Ryan Waldschmidt <em>CF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.257</td></tr><tr><td>Jesus Valdez <em>3B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr></tbody></table>
+      
+        <div class="subsection-title">Colorado Rockies Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Sean Sullivan</td><td>4.0</td><td>3</td><td>2</td><td>2</td><td>0</td><td>1</td><td>3.38</td></tr><tr><td>John Brebbia</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Seth Halvorsen</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>1</td><td>23.63</td></tr><tr><td>Jaden Hill</td><td>2.0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>5</td><td>9.00</td></tr><tr><td>Victor Juarez</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr></tbody></table>
+        <div class="subsection-title">Arizona Diamondbacks Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Taylor Clarke</td><td>2.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>0.00</td></tr><tr><td>Juan Morillo</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Drey Jameson</td><td>1.2</td><td>2</td><td>3</td><td>3</td><td>3</td><td>0</td><td>8.44</td></tr><tr><td>Nate Savino</td><td>0.1</td><td>3</td><td>1</td><td>1</td><td>1</td><td>1</td><td>4.50</td></tr><tr><td>Brandyn Garcia</td><td>0.0</td><td>1</td><td>5</td><td>5</td><td>2</td><td>0</td><td>11.25</td></tr><tr><td>Casey Anderson</td><td>0.1</td><td>2</td><td>3</td><td>3</td><td>2</td><td>0</td><td>5.79</td></tr><tr><td>John Curtiss</td><td>1.2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>4.76</td></tr><tr><td>Hayden Durke</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr><tr><td>Gerardo Carrillo</td><td>1.0</td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1.59</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Washington Nationals</span><span class="team-score winner">3</span></div>
+        <div class="game-matchup"><span class="team-name">Houston Astros</span><span class="team-score">2</span></div>
+        <div class="game-meta">CACTI Park of the Palm Beaches</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Washington Nationals</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td>
+          <td class="rhe total">3</td><td class="rhe">8</td><td class="rhe">1</td></tr>
+        <tr><td class="">Houston Astros</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="rhe total">2</td><td class="rhe">7</td><td class="rhe">1</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Washington Nationals Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>CJ Abrams <em>SS</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>.174</td></tr><tr><td>Angel Feliz <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Luis Garcia Jr. <em>1B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.133</td></tr><tr><td>Coy James <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Dylan Crews <em>CF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.105</td></tr><tr><td>Yeremi Cabrera <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Keibert Ruiz <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>.217</td></tr><tr><td>Riley Adams <em>C</em></td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.200</td></tr><tr><td>Brady House <em>3B</em></td><td>4</td><td>1</td><td>2</td><td>0</td><td>0</td><td>1</td><td>.440</td></tr><tr><td>Nasim Nunez <em>2B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>.190</td></tr><tr><td>Trey Lipscomb <em>3B</em></td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.350</td></tr><tr><td>Robert Hassell III <em>CF</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.286</td></tr><tr><td>Samuel Brown <em>1B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.100</td></tr><tr><td>Andres Chaparro <em>1B</em></td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.263</td></tr><tr><td>Yohandy Morales <em>1B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.063</td></tr><tr><td>Christian Franklin <em>LF</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.333</td></tr><tr><td>Jared McKenzie <em>LF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr></tbody></table>
+        <div class="subsection-title">Houston Astros Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Zach Cole <em>LF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.136</td></tr><tr><td>Chase Call <em>UN</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.200</td></tr><tr><td>Carlos Correa <em>SS</em></td><td>3</td><td>1</td><td>2</td><td>1</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Riley Unroe <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.286</td></tr><tr><td>Yordan Alvarez <em>DH</em></td><td>3</td><td>1</td><td>3</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Collin Price <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.188</td></tr><tr><td>Yainer Diaz <em>C</em></td><td>3</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>.105</td></tr><tr><td>James Nelson <em>3B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.231</td></tr><tr><td>Christian Walker <em>1B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.050</td></tr><tr><td>Jason Schiavone <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.000</td></tr><tr><td>Alberto Hernandez <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Cam Smith <em>RF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.320</td></tr><tr><td>John Garcia <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.143</td></tr><tr><td>Jake Meyers <em>CF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.095</td></tr><tr><td>Tyler Whitaker <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Jax Biggers <em>2B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.125</td></tr><tr><td>Jack Winkler <em>2B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.316</td></tr><tr><td>Nick Allen <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.227</td></tr><tr><td>Joey Loperfido <em>LF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.259</td></tr></tbody></table>
+      
+        <div class="subsection-title">Washington Nationals Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Jake Irvin</td><td>3.1</td><td>5</td><td>2</td><td>2</td><td>0</td><td>4</td><td>2.16</td></tr><tr><td>Clayton Beeter</td><td>0.2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Ken Waldichuk</td><td>2.2</td><td>2</td><td>0</td><td>0</td><td>0</td><td>6</td><td>1.35</td></tr><tr><td>Jackson Rutledge</td><td>0.2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1.69</td></tr><tr><td>PJ Poulin</td><td>0.2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Griff McGarry</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>1.93</td></tr></tbody></table>
+        <div class="subsection-title">Houston Astros Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Mike Burrows</td><td>4.0</td><td>3</td><td>0</td><td>0</td><td>2</td><td>5</td><td>0.00</td></tr><tr><td>Tom Cosgrove</td><td>1.0</td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>2.35</td></tr><tr><td>Bennett Sousa</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>3.00</td></tr><tr><td>Bryan King</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>10.13</td></tr><tr><td>Roddery Munoz</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>2.84</td></tr><tr><td>Logan VanWey</td><td>1.0</td><td>3</td><td>2</td><td>1</td><td>0</td><td>1</td><td>3.60</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Atlanta Braves</span><span class="team-score">2</span></div>
+        <div class="game-matchup"><span class="team-name">Pittsburgh Pirates</span><span class="team-score winner">5</span></div>
+        <div class="game-meta">LECOM Park</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Atlanta Braves</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td>
+          <td class="rhe total">2</td><td class="rhe">2</td><td class="rhe">3</td></tr>
+        <tr><td class="total">Pittsburgh Pirates</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>5</td><td></td>
+          <td class="rhe total">5</td><td class="rhe">5</td><td class="rhe">1</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Atlanta Braves Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Michael Harris II <em>CF</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.304</td></tr><tr><td>Eric Hartman <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.167</td></tr><tr><td>Jorge Mateo <em>SS</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.148</td></tr><tr><td>John Gil <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.158</td></tr><tr><td>Dominic Smith <em>DH</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.381</td></tr><tr><td>Andrew Compton <em>1B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.200</td></tr><tr><td>Kyle Farmer <em>DH</em></td><td>3</td><td>0</td><td>1</td><td>1</td><td>0</td><td>2</td><td>.417</td></tr><tr><td>Cody Miller <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.750</td></tr><tr><td>Ben Gamel <em>RF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.250</td></tr><tr><td>Owen Carey <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Luke Williams <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.087</td></tr><tr><td>Colby Jones <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Sandy Leon <em>C</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.000</td></tr><tr><td>Jair Camargo <em>C</em></td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>.200</td></tr><tr><td>Patrick Clohisy <em>CF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.231</td></tr><tr><td>Dalton McIntyre <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr></tbody></table>
+        <div class="subsection-title">Pittsburgh Pirates Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Spencer Horwitz <em>1B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.176</td></tr><tr><td>Shalin Polanco <em>OF</em></td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>.000</td></tr><tr><td>Ryan O'Hearn <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.350</td></tr><tr><td>Dominic Fletcher <em>RF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.222</td></tr><tr><td>Bryan Reynolds <em>LF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.227</td></tr><tr><td>Alika Williams <em>2B</em></td><td>2</td><td>1</td><td>2</td><td>2</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Marcell Ozuna <em>DH</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.273</td></tr><tr><td>Javier Rivas <em>SS</em></td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Jared Triolo <em>3B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.280</td></tr><tr><td>Mike Jarvis <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.167</td></tr><tr><td>Nick Yorke <em>3B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.250</td></tr><tr><td>Brian Sanchez <em>LF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Billy Cook <em>RF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.273</td></tr><tr><td>Endy Rodriguez <em>C</em></td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.286</td></tr><tr><td>Enmanuel Valdez <em>1B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.080</td></tr><tr><td>Yordany De Los Santos <em>SS</em></td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.545</td></tr><tr><td>Henry Davis <em>C</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Callan Moss <em>1B</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.429</td></tr></tbody></table>
+      
+        <div class="subsection-title">Atlanta Braves Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Grant Holmes</td><td>5.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>9</td><td>0.00</td></tr><tr><td>Joel Payamps</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Tayler Scott</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Blayne Enlow</td><td>0.1</td><td>2</td><td>4</td><td>0</td><td>1</td><td>1</td><td>0.00</td></tr><tr><td>Anderson Pilar</td><td>0.2</td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>9.00</td></tr></tbody></table>
+        <div class="subsection-title">Pittsburgh Pirates Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Bubba Chandler</td><td>5.0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>8</td><td>6.55</td></tr><tr><td>Evan Sisk</td><td>1.0</td><td>1</td><td>1</td><td>1</td><td>2</td><td>1</td><td>3.00</td></tr><tr><td>Cam Sanders</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1.59</td></tr><tr><td>Michael Darrell-Hicks</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>6.75</td></tr><tr><td>Noah Murdock</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Milwaukee Brewers</span><span class="team-score">0</span></div>
+        <div class="game-matchup"><span class="team-name">Cleveland Guardians</span><span class="team-score winner">1</span></div>
+        <div class="game-meta">Goodyear Ballpark</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Milwaukee Brewers</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+          <td class="rhe total">0</td><td class="rhe">3</td><td class="rhe">0</td></tr>
+        <tr><td class="total">Cleveland Guardians</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td></td>
+          <td class="rhe total">1</td><td class="rhe">4</td><td class="rhe">1</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Milwaukee Brewers Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Garrett Mitchell <em>CF</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.133</td></tr><tr><td>Jordyn Adams <em>CF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Brandon Lockridge <em>LF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>.261</td></tr><tr><td>Christian Yelich <em>DH</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>.182</td></tr><tr><td>Greg Jones <em>LF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Gary Sanchez <em>DH</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>.267</td></tr><tr><td>Ramon Rodriguez <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Jett Williams <em>SS</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.286</td></tr><tr><td>Ethan Murray <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.333</td></tr><tr><td>Mike Boeve <em>2B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.125</td></tr><tr><td>Eric Bitonti <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Cooper Pratt <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.227</td></tr><tr><td>Eric Brown <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Jacob Hurtubise <em>LF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.286</td></tr><tr><td>Josiah Ragsdale <em>OF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Eddys Leonard <em>SS</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.462</td></tr><tr><td>Daniel Dickinson <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.125</td></tr></tbody></table>
+        <div class="subsection-title">Cleveland Guardians Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Steven Kwan <em>CF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.259</td></tr><tr><td>Jacob Gage Fox <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Chase DeLauter <em>RF</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.389</td></tr><tr><td>Aaron Walton <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Jose Ramirez <em>3B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.192</td></tr><tr><td>Dean Curley <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Kyle Manzardo <em>1B</em></td><td>3</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.161</td></tr><tr><td>Carter Kieboom <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.118</td></tr><tr><td>Rhys Hoskins <em>1B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.227</td></tr><tr><td>Gabriel Arias <em>SS</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.286</td></tr><tr><td>Dauri Fernandez <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Brayan Rocchio <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.310</td></tr><tr><td>Ricardo Romero <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Austin Hedges <em>C</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.222</td></tr><tr><td>Kody Huff <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.364</td></tr><tr><td>Angel Martinez <em>LF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>.417</td></tr><tr><td>Nick Mitchell <em>OF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.667</td></tr></tbody></table>
+      
+        <div class="subsection-title">Milwaukee Brewers Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>DL Hall</td><td>2.0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>2</td><td>3.60</td></tr><tr><td>Easton McGee</td><td>2.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0.00</td></tr><tr><td>Jacob Waguespack</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0.00</td></tr><tr><td>Drew Rom</td><td>2.0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1.69</td></tr><tr><td>Peter Strzelecki</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>3.60</td></tr></tbody></table>
+        <div class="subsection-title">Cleveland Guardians Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Slade Cecconi</td><td>4.0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>6</td><td>2.13</td></tr><tr><td>Cade Smith</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0.00</td></tr><tr><td>Erik Sabrowski</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>3</td><td>2.25</td></tr><tr><td>Connor Brogdon</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td><td>2.57</td></tr><tr><td>Codi Heuer</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>11.81</td></tr><tr><td>Will Dion</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2.84</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Cincinnati Reds</span><span class="team-score">5</span></div>
+        <div class="game-matchup"><span class="team-name">Los Angeles Dodgers</span><span class="team-score winner">9</span></div>
+        <div class="game-meta">Camelback Ranch - Glendale</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Cincinnati Reds</td><td>0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td>
+          <td class="rhe total">5</td><td class="rhe">7</td><td class="rhe">0</td></tr>
+        <tr><td class="total">Los Angeles Dodgers</td><td>4</td><td>0</td><td>2</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td><td></td>
+          <td class="rhe total">9</td><td class="rhe">13</td><td class="rhe">2</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Cincinnati Reds Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Matt McLain <em>2B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.581</td></tr><tr><td>Hansel Jimenez <em>3B</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Spencer Steer <em>LF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.179</td></tr><tr><td>Carlos Jorge <em>CF</em></td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>.200</td></tr><tr><td>Elly De La Cruz <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.300</td></tr><tr><td>Garrett Hampson <em>2B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.042</td></tr><tr><td>Sal Stewart <em>1B</em></td><td>2</td><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.321</td></tr><tr><td>P.J. Higgins <em>C</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.211</td></tr><tr><td>Dane Myers <em>CF</em></td><td>2</td><td>2</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.350</td></tr><tr><td>Jay Allen <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Tyler Stephenson <em>C</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.150</td></tr><tr><td>Will Banfield <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.313</td></tr><tr><td>Noelvi Marte <em>RF</em></td><td>3</td><td>0</td><td>2</td><td>1</td><td>0</td><td>0</td><td>.313</td></tr><tr><td>Ryan McCrystal <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1.000</td></tr><tr><td>Ke'Bryan Hayes <em>3B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.227</td></tr><tr><td>Tyson Lewis <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.429</td></tr><tr><td>Rece Hinds <em>RF</em></td><td>2</td><td>0</td><td>0</td><td>1</td><td>1</td><td>2</td><td>.370</td></tr><tr><td>Kien Vu <em>OF</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.500</td></tr></tbody></table>
+        <div class="subsection-title">Los Angeles Dodgers Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Miguel Rojas <em>SS</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.321</td></tr><tr><td>Ryan Fitzgerald <em>3B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.250</td></tr><tr><td>Andy Pages <em>CF</em></td><td>3</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td>.414</td></tr><tr><td>Zachary Ehrhard <em>OF</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.316</td></tr><tr><td>Teoscar Hernandez <em>LF</em></td><td>3</td><td>2</td><td>2</td><td>3</td><td>0</td><td>0</td><td>.464</td></tr><tr><td>Noah Miller <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.290</td></tr><tr><td>Freddie Freeman <em>1B</em></td><td>2</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>.474</td></tr><tr><td>James Tibbs III <em>RF</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.294</td></tr><tr><td>Alex Call <em>LF</em></td><td>2</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td>.529</td></tr><tr><td>Zyhir Hope <em>CF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.214</td></tr><tr><td>Max Muncy <em>3B</em></td><td>3</td><td>2</td><td>1</td><td>2</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Eduardo Quintero <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Santiago Espinal <em>3B</em></td><td>3</td><td>0</td><td>1</td><td>2</td><td>0</td><td>1</td><td>.462</td></tr><tr><td>Kyle Nevin <em>3B</em></td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.333</td></tr><tr><td>Dalton Rushing <em>C</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.179</td></tr><tr><td>Seby Zavala <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.154</td></tr><tr><td>Nick Senzel <em>3B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.308</td></tr><tr><td>Logan Wagner <em>3B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.375</td></tr></tbody></table>
+      
+        <div class="subsection-title">Cincinnati Reds Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Nick Lodolo</td><td>4.0</td><td>6</td><td>6</td><td>6</td><td>0</td><td>3</td><td>7.00</td></tr><tr><td>Tejay Antone</td><td>1.0</td><td>3</td><td>2</td><td>2</td><td>1</td><td>2</td><td>9.64</td></tr><tr><td>Yunior Marte</td><td>1.0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>3</td><td>7.50</td></tr><tr><td>Brock Burke</td><td>1.0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>4.50</td></tr><tr><td>Anthony Misiewicz</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>2</td><td>1.80</td></tr></tbody></table>
+        <div class="subsection-title">Los Angeles Dodgers Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Cole Irvin</td><td>2.0</td><td>2</td><td>1</td><td>1</td><td>4</td><td>1</td><td>9.00</td></tr><tr><td>Myles Caba</td><td>1.0</td><td>2</td><td>2</td><td>1</td><td>1</td><td>2</td><td>20.25</td></tr><tr><td>Kyle Hurt</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>3</td><td>4.50</td></tr><tr><td>Paul Gervase</td><td>1.2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3.38</td></tr><tr><td>Alex Vesia</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Tanner Scott</td><td>1.0</td><td>1</td><td>2</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Antoine Kelly</td><td>0.2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0.00</td></tr><tr><td>Antonio Knowles</td><td>1.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Chicago White Sox</span><span class="team-score">3</span></div>
+        <div class="game-matchup"><span class="team-name">San Francisco Giants</span><span class="team-score winner">3</span></div>
+        <div class="game-meta">Scottsdale Stadium</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="">Chicago White Sox</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
+          <td class="rhe total">3</td><td class="rhe">9</td><td class="rhe">0</td></tr>
+        <tr><td class="total">San Francisco Giants</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td>
+          <td class="rhe total">3</td><td class="rhe">6</td><td class="rhe">0</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Chicago White Sox Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Luisangel Acuna <em>CF</em></td><td>4</td><td>0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>.440</td></tr><tr><td>Mario Camilletti <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.214</td></tr><tr><td>Miguel Vargas <em>3B</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.306</td></tr><tr><td>Kyle Lodise <em>SS</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Edgar Quero <em>C</em></td><td>4</td><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>.353</td></tr><tr><td>Rikuu Nishida <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.167</td></tr><tr><td>Jarred Kelenic <em>RF</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.207</td></tr><tr><td>Lenyn Sosa <em>2B</em></td><td>3</td><td>1</td><td>2</td><td>1</td><td>1</td><td>0</td><td>.267</td></tr><tr><td>Ryan Galanie <em>1B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.182</td></tr><tr><td>LaMonte Wade Jr. <em>1B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.258</td></tr><tr><td>Darren Baker <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.429</td></tr><tr><td>Tristan Peters <em>CF</em></td><td>3</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.217</td></tr><tr><td>Dru Baker <em>CF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.273</td></tr><tr><td>Derek Hill <em>RF</em></td><td>2</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>.286</td></tr><tr><td>Braden Montgomery <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.364</td></tr><tr><td>William Bergolla Jr. <em>2B</em></td><td>3</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.370</td></tr><tr><td>Josh Breaux <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.200</td></tr></tbody></table>
+        <div class="subsection-title">San Francisco Giants Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Harrison Bader <em>CF</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.429</td></tr><tr><td>Nate Furman <em>2B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.200</td></tr><tr><td>Luis Matos <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.310</td></tr><tr><td>Rafael Devers <em>1B</em></td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.000</td></tr><tr><td>Matt Chapman <em>3B</em></td><td>3</td><td>1</td><td>2</td><td>1</td><td>0</td><td>0</td><td>.375</td></tr><tr><td>Christian Koss <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.381</td></tr><tr><td>Willy Adames <em>SS</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>.143</td></tr><tr><td>Tyler Fitzgerald <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.167</td></tr><tr><td>Bryce Eldridge <em>DH</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>.241</td></tr><tr><td>Jake Holton <em>1B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.241</td></tr><tr><td>Daniel Susac <em>C</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>.333</td></tr><tr><td>Lisbel Diaz <em>CF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Eric Haase <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.227</td></tr><tr><td>Jared Oliva <em>CF</em></td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.407</td></tr><tr><td>Will Brennan <em>LF</em></td><td>2</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.391</td></tr><tr><td>Jerar Encarnacion <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>.286</td></tr><tr><td>Casey Schmitt <em>DH</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.290</td></tr><tr><td>Osleivis Basabe <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.455</td></tr><tr><td>Parks Harber <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.320</td></tr><tr><td>Thomas Gavello <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Victor Bericoto <em>RF</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>.429</td></tr><tr><td>Grant McCray <em>CF</em></td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.208</td></tr></tbody></table>
+      
+        <div class="subsection-title">Chicago White Sox Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Ryan Borucki</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr><tr><td>Jonathan Cannon</td><td>3.1</td><td>5</td><td>2</td><td>2</td><td>4</td><td>3</td><td>4.09</td></tr><tr><td>Jared Kelley</td><td>0.1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Eric Adler</td><td>0.1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.00</td></tr><tr><td>Jedixson Paez</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>10.13</td></tr><tr><td>Brandon Eisert</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Lucas Sims</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0.00</td></tr><tr><td>Tyson Miller</td><td>1.0</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>7.94</td></tr></tbody></table>
+        <div class="subsection-title">San Francisco Giants Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Trevor McDonald</td><td>4.0</td><td>4</td><td>2</td><td>2</td><td>1</td><td>4</td><td>1.80</td></tr><tr><td>Matt Gage</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2</td><td>3.60</td></tr><tr><td>Keaton Winn</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1.42</td></tr><tr><td>Tristan Beck</td><td>1.0</td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>5.79</td></tr><tr><td>Caleb Kilian</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1.42</td></tr><tr><td>Juan Sanchez</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>1</td><td>0.00</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Kansas City Royals</span><span class="team-score winner">10</span></div>
+        <div class="game-matchup"><span class="team-name">San Diego Padres</span><span class="team-score">1</span></div>
+        <div class="game-meta">Peoria Stadium</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th class="rhe">R</th><th class="rhe">H</th><th class="rhe">E</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Kansas City Royals</td><td>6</td><td>1</td><td>0</td><td>0</td><td>2</td><td>1</td><td>0</td><td>0</td><td>0</td>
+          <td class="rhe total">10</td><td class="rhe">12</td><td class="rhe">0</td></tr>
+        <tr><td class="">San Diego Padres</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td>
+          <td class="rhe total">1</td><td class="rhe">5</td><td class="rhe">1</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Kansas City Royals Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Lane Thomas <em>CF</em></td><td>3</td><td>2</td><td>2</td><td>1</td><td>1</td><td>0</td><td>.290</td></tr><tr><td>Hyungchan Um <em>C</em></td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.333</td></tr><tr><td>Kameron Misner <em>CF</em></td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>.286</td></tr><tr><td>Rudy Martin <em>RF</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Nick Loftin <em>2B</em></td><td>4</td><td>1</td><td>1</td><td>2</td><td>0</td><td>1</td><td>.308</td></tr><tr><td>Erick Torres <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Josh Rojas <em>3B</em></td><td>3</td><td>1</td><td>1</td><td>0</td><td>1</td><td>2</td><td>.286</td></tr><tr><td>Justin Johnson <em>2B</em></td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.000</td></tr><tr><td>Luca Tresh <em>C</em></td><td>4</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.278</td></tr><tr><td>Canyon Brown <em>C</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.182</td></tr><tr><td>Gavin Cross <em>RF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>.280</td></tr><tr><td>Tyler Gentry <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.200</td></tr><tr><td>Connor Kaiser <em>SS</em></td><td>3</td><td>1</td><td>2</td><td>2</td><td>1</td><td>1</td><td>.304</td></tr><tr><td>Colton Becker <em>1B</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.167</td></tr><tr><td>Daniel Vazquez <em>SS</em></td><td>3</td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td><td>.250</td></tr><tr><td>Jack Pineda <em>SS</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.300</td></tr><tr><td>Dustin Dickerson <em>SS</em></td><td>2</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>.500</td></tr><tr><td>Brett Squires <em>OF</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.308</td></tr></tbody></table>
+        <div class="subsection-title">San Diego Padres Batting</div>
+        <table class="stats"><thead><tr><th>Batter</th><th>AB</th><th>R</th><th>H</th><th>RBI</th><th>BB</th><th>SO</th><th>AVG</th></tr></thead>
+        <tbody><tr><td>Jake Cronenworth <em>2B</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>.346</td></tr><tr><td>Jase Bowen <em>CF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.273</td></tr><tr><td>Ramon Laureano <em>LF</em></td><td>3</td><td>1</td><td>1</td><td>1</td><td>0</td><td>2</td><td>.292</td></tr><tr><td>Carlos Rodriguez <em>RF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.273</td></tr><tr><td>Miguel Andujar <em>DH</em></td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>.267</td></tr><tr><td>Pablo Reyes <em>OF</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.318</td></tr><tr><td>Jackson Merrill <em>CF</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>.267</td></tr><tr><td>Nick Schnell <em>RF</em></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.250</td></tr><tr><td>Nick Castellanos <em>RF</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>.286</td></tr><tr><td>Mason McCoy <em>2B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.148</td></tr><tr><td>Ty France <em>1B</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.367</td></tr><tr><td>Nick Solak <em>1B</em></td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.344</td></tr><tr><td>Gavin Sheets <em>1B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.174</td></tr><tr><td>Jose Miranda <em>3B</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.367</td></tr><tr><td>Freddy Fermin <em>C</em></td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>.409</td></tr><tr><td>Rodolfo Duran <em>C</em></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>.286</td></tr><tr><td>Samad Taylor <em>2B</em></td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>.269</td></tr></tbody></table>
+      
+        <div class="subsection-title">Kansas City Royals Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>Kris Bubic</td><td>3.0</td><td>2</td><td>0</td><td>0</td><td>1</td><td>4</td><td>1.13</td></tr><tr><td>Nick Mears</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td><td>7.20</td></tr><tr><td>Lucas Erceg</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0.00</td></tr><tr><td>Steven Cruz</td><td>1.0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>1</td><td>2.08</td></tr><tr><td>Hector Neris</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7.50</td></tr><tr><td>Eli Morgan</td><td>1.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1.35</td></tr><tr><td>Brandon Johnson</td><td>1.0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>11.57</td></tr></tbody></table>
+        <div class="subsection-title">San Diego Padres Pitching</div>
+        <table class="stats"><thead><tr><th>Pitcher</th><th>IP</th><th>H</th><th>R</th><th>ER</th><th>BB</th><th>SO</th><th>ERA</th></tr></thead>
+        <tbody><tr><td>German Marquez</td><td>1.2</td><td>4</td><td>6</td><td>6</td><td>4</td><td>1</td><td>12.15</td></tr><tr><td>Sam Whiting</td><td>0.1</td><td>1</td><td>1</td><td>0</td><td>2</td><td>0</td><td>0.00</td></tr><tr><td>Adrian Morejon</td><td>2.0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td><td>3.60</td></tr><tr><td>JP Sears</td><td>4.0</td><td>5</td><td>3</td><td>3</td><td>0</td><td>6</td><td>8.44</td></tr><tr><td>David Morgan</td><td>1.0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0.00</td></tr></tbody></table>
+    </div>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <div class="subsection-title">MLB Standings</div><div class="div-title">American League</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th><th>STK</th></tr></thead><tbody><tr><td>Tampa Bay Rays</td><td>33</td><td>15</td><td>.688</td><td>-</td><td>W4</td></tr><tr><td>New York Yankees</td><td>30</td><td>21</td><td>.588</td><td>4.5</td><td>L2</td></tr><tr><td>Cleveland Guardians</td><td>30</td><td>22</td><td>.577</td><td>5</td><td>W6</td></tr><tr><td>Athletics</td><td>26</td><td>24</td><td>.520</td><td>8</td><td>W3</td></tr><tr><td>Chicago White Sox</td><td>25</td><td>24</td><td>.510</td><td>8.5</td><td>L1</td></tr><tr><td>Texas Rangers</td><td>24</td><td>25</td><td>.490</td><td>9.5</td><td>W2</td></tr><tr><td>Seattle Mariners</td><td>24</td><td>27</td><td>.471</td><td>10.5</td><td>W1</td></tr><tr><td>Minnesota Twins</td><td>23</td><td>27</td><td>.460</td><td>11</td><td>W1</td></tr><tr><td>Toronto Blue Jays</td><td>23</td><td>27</td><td>.460</td><td>11</td><td>W2</td></tr><tr><td>Boston Red Sox</td><td>22</td><td>27</td><td>.449</td><td>11.5</td><td>W3</td></tr><tr><td>Baltimore Orioles</td><td>21</td><td>29</td><td>.420</td><td>13</td><td>L3</td></tr><tr><td>Houston Astros</td><td>21</td><td>31</td><td>.404</td><td>14</td><td>W1</td></tr><tr><td>Kansas City Royals</td><td>20</td><td>30</td><td>.400</td><td>14</td><td>L3</td></tr><tr><td>Detroit Tigers</td><td>20</td><td>31</td><td>.392</td><td>14.5</td><td>L6</td></tr><tr><td>Los Angeles Angels</td><td>17</td><td>34</td><td>.333</td><td>17.5</td><td>L3</td></tr></tbody></table><div class="div-title">National League</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th><th>STK</th></tr></thead><tbody><tr><td>Atlanta Braves</td><td>35</td><td>16</td><td>.686</td><td>-</td><td>W3</td></tr><tr><td>Los Angeles Dodgers</td><td>31</td><td>19</td><td>.620</td><td>3.5</td><td>W2</td></tr><tr><td>Milwaukee Brewers</td><td>29</td><td>18</td><td>.617</td><td>4</td><td>W3</td></tr><tr><td>San Diego Padres</td><td>29</td><td>20</td><td>.592</td><td>5</td><td>L2</td></tr><tr><td>Chicago Cubs</td><td>29</td><td>22</td><td>.569</td><td>6</td><td>L6</td></tr><tr><td>St. Louis Cardinals</td><td>28</td><td>21</td><td>.571</td><td>6</td><td>L2</td></tr><tr><td>Arizona Diamondbacks</td><td>26</td><td>23</td><td>.531</td><td>8</td><td>W5</td></tr><tr><td>Pittsburgh Pirates</td><td>26</td><td>24</td><td>.520</td><td>8.5</td><td>W2</td></tr><tr><td>Cincinnati Reds</td><td>26</td><td>24</td><td>.520</td><td>8.5</td><td>W2</td></tr><tr><td>Philadelphia Phillies</td><td>25</td><td>25</td><td>.500</td><td>9.5</td><td>L2</td></tr><tr><td>Washington Nationals</td><td>25</td><td>26</td><td>.490</td><td>10</td><td>L1</td></tr><tr><td>New York Mets</td><td>22</td><td>28</td><td>.440</td><td>12.5</td><td>W1</td></tr><tr><td>Miami Marlins</td><td>22</td><td>29</td><td>.431</td><td>13</td><td>L3</td></tr><tr><td>San Francisco Giants</td><td>20</td><td>30</td><td>.400</td><td>14.5</td><td>L3</td></tr><tr><td>Colorado Rockies</td><td>19</td><td>32</td><td>.373</td><td>16</td><td>L3</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="sport-section" data-sport="nhl">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">NHL — Box Scores</div>
+        <div class="games-grid">
+          
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">San Jose Sharks</span><span class="team-score winner">4</span></div>
+        <div class="game-matchup"><span class="team-name">Boston Bruins</span><span class="team-score">2</span></div>
+        <div class="game-meta">TD Garden</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">San Jose Sharks</td><td>1</td><td>1</td><td>2</td><td class="rhe total">4</td></tr>
+        <tr><td class="">Boston Bruins</td><td>0</td><td>0</td><td>2</td><td class="rhe total">2</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>San Jose Sharks</th><th>Boston Bruins</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>1</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>2</td><td>2</td></tr><tr><td>Penalty Minutes</td><td>24</td><td>14</td></tr><tr><td>Faceoffs Won</td><td>25</td><td>37</td></tr><tr><td>Blocked Shots</td><td>18</td><td>8</td></tr><tr><td>Giveaways</td><td>18</td><td>13</td></tr><tr><td>Takeaways</td><td>5</td><td>5</td></tr><tr><td>Hits</td><td>27</td><td>17</td></tr><tr><td>Faceoff Win Percent</td><td>40.3</td><td>59.7</td></tr><tr><td>Power Play Percentage</td><td>50.0</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>1</td><td>0</td></tr><tr><td>Shots</td><td>28</td><td>41</td></tr><tr><td>Total Penalties</td><td>4</td><td>3</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Washington Capitals</span><span class="team-score winner">2</span></div>
+        <div class="game-matchup"><span class="team-name">Buffalo Sabres</span><span class="team-score">1</span></div>
+        <div class="game-meta">KeyBank Center</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Washington Capitals</td><td>0</td><td>1</td><td>1</td><td class="rhe total">2</td></tr>
+        <tr><td class="">Buffalo Sabres</td><td>1</td><td>0</td><td>0</td><td class="rhe total">1</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Washington Capitals</th><th>Buffalo Sabres</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>2</td><td>2</td></tr><tr><td>Penalty Minutes</td><td>4</td><td>4</td></tr><tr><td>Faceoffs Won</td><td>18</td><td>27</td></tr><tr><td>Blocked Shots</td><td>17</td><td>11</td></tr><tr><td>Giveaways</td><td>17</td><td>13</td></tr><tr><td>Takeaways</td><td>9</td><td>5</td></tr><tr><td>Hits</td><td>22</td><td>24</td></tr><tr><td>Faceoff Win Percent</td><td>40.0</td><td>60.0</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>22</td><td>30</td></tr><tr><td>Total Penalties</td><td>2</td><td>2</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Anaheim Ducks</span><span class="team-score">4</span></div>
+        <div class="game-matchup"><span class="team-name">Toronto Maple Leafs</span><span class="team-score winner">6</span></div>
+        <div class="game-meta">Scotiabank Arena</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Anaheim Ducks</td><td>2</td><td>1</td><td>1</td><td class="rhe total">4</td></tr>
+        <tr><td class="total">Toronto Maple Leafs</td><td>1</td><td>2</td><td>3</td><td class="rhe total">6</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Anaheim Ducks</th><th>Toronto Maple Leafs</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>3</td></tr><tr><td>Power Play Opportunities</td><td>5</td><td>7</td></tr><tr><td>Penalty Minutes</td><td>41</td><td>46</td></tr><tr><td>Faceoffs Won</td><td>23</td><td>30</td></tr><tr><td>Blocked Shots</td><td>9</td><td>13</td></tr><tr><td>Giveaways</td><td>9</td><td>21</td></tr><tr><td>Takeaways</td><td>7</td><td>6</td></tr><tr><td>Hits</td><td>15</td><td>34</td></tr><tr><td>Faceoff Win Percent</td><td>43.4</td><td>56.6</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>42.9</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>1</td></tr><tr><td>Shots</td><td>40</td><td>28</td></tr><tr><td>Total Penalties</td><td>12</td><td>12</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Detroit Red Wings</span><span class="team-score">1</span></div>
+        <div class="game-matchup"><span class="team-name">Tampa Bay Lightning</span><span class="team-score winner">4</span></div>
+        <div class="game-meta">Benchmark International Arena</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Detroit Red Wings</td><td>0</td><td>0</td><td>1</td><td class="rhe total">1</td></tr>
+        <tr><td class="total">Tampa Bay Lightning</td><td>0</td><td>1</td><td>3</td><td class="rhe total">4</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Detroit Red Wings</th><th>Tampa Bay Lightning</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>1</td></tr><tr><td>Power Play Opportunities</td><td>1</td><td>1</td></tr><tr><td>Penalty Minutes</td><td>2</td><td>2</td></tr><tr><td>Faceoffs Won</td><td>21</td><td>21</td></tr><tr><td>Blocked Shots</td><td>20</td><td>14</td></tr><tr><td>Giveaways</td><td>10</td><td>16</td></tr><tr><td>Takeaways</td><td>10</td><td>2</td></tr><tr><td>Hits</td><td>21</td><td>22</td></tr><tr><td>Faceoff Win Percent</td><td>50.0</td><td>50.0</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>100.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>25</td><td>29</td></tr><tr><td>Total Penalties</td><td>1</td><td>1</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Columbus Blue Jackets</span><span class="team-score">1</span></div>
+        <div class="game-matchup"><span class="team-name">Florida Panthers</span><span class="team-score winner">2</span></div>
+        <div class="game-meta">Amerant Bank Arena</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>OT</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Columbus Blue Jackets</td><td>0</td><td>1</td><td>0</td><td>0</td><td class="rhe total">1</td></tr>
+        <tr><td class="total">Florida Panthers</td><td>0</td><td>0</td><td>1</td><td>1</td><td class="rhe total">2 <small>(OT)</small></td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Columbus Blue Jackets</th><th>Florida Panthers</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>2</td></tr><tr><td>Power Play Opportunities</td><td>2</td><td>2</td></tr><tr><td>Penalty Minutes</td><td>4</td><td>4</td></tr><tr><td>Faceoffs Won</td><td>24</td><td>17</td></tr><tr><td>Blocked Shots</td><td>10</td><td>17</td></tr><tr><td>Giveaways</td><td>14</td><td>23</td></tr><tr><td>Takeaways</td><td>7</td><td>5</td></tr><tr><td>Hits</td><td>13</td><td>23</td></tr><tr><td>Faceoff Win Percent</td><td>58.5</td><td>41.5</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>100.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>31</td><td>21</td></tr><tr><td>Total Penalties</td><td>2</td><td>2</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Calgary Flames</span><span class="team-score winner">5</span></div>
+        <div class="game-matchup"><span class="team-name">New Jersey Devils</span><span class="team-score">4</span></div>
+        <div class="game-meta">Prudential Center</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Calgary Flames</td><td>2</td><td>2</td><td>1</td><td class="rhe total">5</td></tr>
+        <tr><td class="">New Jersey Devils</td><td>1</td><td>1</td><td>2</td><td class="rhe total">4</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Calgary Flames</th><th>New Jersey Devils</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>2</td></tr><tr><td>Power Play Opportunities</td><td>0</td><td>3</td></tr><tr><td>Penalty Minutes</td><td>6</td><td>0</td></tr><tr><td>Faceoffs Won</td><td>24</td><td>31</td></tr><tr><td>Blocked Shots</td><td>20</td><td>8</td></tr><tr><td>Giveaways</td><td>18</td><td>15</td></tr><tr><td>Takeaways</td><td>5</td><td>4</td></tr><tr><td>Hits</td><td>22</td><td>14</td></tr><tr><td>Faceoff Win Percent</td><td>43.6</td><td>56.4</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>66.7</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>1</td><td>0</td></tr><tr><td>Shots</td><td>29</td><td>32</td></tr><tr><td>Total Penalties</td><td>2</td><td>0</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">St. Louis Blues</span><span class="team-score winner">3</span></div>
+        <div class="game-matchup"><span class="team-name">Carolina Hurricanes</span><span class="team-score">1</span></div>
+        <div class="game-meta">Lenovo Center</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">St. Louis Blues</td><td>0</td><td>1</td><td>2</td><td class="rhe total">3</td></tr>
+        <tr><td class="">Carolina Hurricanes</td><td>1</td><td>0</td><td>0</td><td class="rhe total">1</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>St. Louis Blues</th><th>Carolina Hurricanes</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>1</td><td>2</td></tr><tr><td>Penalty Minutes</td><td>4</td><td>2</td></tr><tr><td>Faceoffs Won</td><td>27</td><td>27</td></tr><tr><td>Blocked Shots</td><td>9</td><td>12</td></tr><tr><td>Giveaways</td><td>16</td><td>11</td></tr><tr><td>Takeaways</td><td>5</td><td>7</td></tr><tr><td>Hits</td><td>18</td><td>16</td></tr><tr><td>Faceoff Win Percent</td><td>50.0</td><td>50.0</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>17</td><td>32</td></tr><tr><td>Total Penalties</td><td>2</td><td>1</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Edmonton Oilers</span><span class="team-score">2</span></div>
+        <div class="game-matchup"><span class="team-name">Dallas Stars</span><span class="team-score winner">7</span></div>
+        <div class="game-meta">American Airlines Center</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Edmonton Oilers</td><td>0</td><td>2</td><td>0</td><td class="rhe total">2</td></tr>
+        <tr><td class="total">Dallas Stars</td><td>3</td><td>2</td><td>2</td><td class="rhe total">7</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Edmonton Oilers</th><th>Dallas Stars</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>2</td></tr><tr><td>Power Play Opportunities</td><td>3</td><td>4</td></tr><tr><td>Penalty Minutes</td><td>24</td><td>22</td></tr><tr><td>Faceoffs Won</td><td>27</td><td>26</td></tr><tr><td>Blocked Shots</td><td>7</td><td>7</td></tr><tr><td>Giveaways</td><td>25</td><td>14</td></tr><tr><td>Takeaways</td><td>3</td><td>7</td></tr><tr><td>Hits</td><td>24</td><td>14</td></tr><tr><td>Faceoff Win Percent</td><td>50.9</td><td>49.1</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>50.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>32</td><td>27</td></tr><tr><td>Total Penalties</td><td>12</td><td>11</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Philadelphia Flyers</span><span class="team-score winner">3</span></div>
+        <div class="game-matchup"><span class="team-name">Minnesota Wild</span><span class="team-score">2</span></div>
+        <div class="game-meta">Grand Casino Arena</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>SO</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Philadelphia Flyers</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td class="rhe total">3</td></tr>
+        <tr><td class="">Minnesota Wild</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td class="rhe total">2 <small>(SO)</small></td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Philadelphia Flyers</th><th>Minnesota Wild</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>1</td></tr><tr><td>Power Play Opportunities</td><td>4</td><td>3</td></tr><tr><td>Penalty Minutes</td><td>6</td><td>8</td></tr><tr><td>Faceoffs Won</td><td>21</td><td>28</td></tr><tr><td>Blocked Shots</td><td>10</td><td>11</td></tr><tr><td>Giveaways</td><td>19</td><td>16</td></tr><tr><td>Takeaways</td><td>8</td><td>3</td></tr><tr><td>Hits</td><td>21</td><td>32</td></tr><tr><td>Faceoff Win Percent</td><td>42.9</td><td>57.1</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>33.3</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>1</td><td>0</td></tr><tr><td>Shots</td><td>27</td><td>23</td></tr><tr><td>Total Penalties</td><td>3</td><td>4</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">New York Rangers</span><span class="team-score winner">6</span></div>
+        <div class="game-matchup"><span class="team-name">Winnipeg Jets</span><span class="team-score">3</span></div>
+        <div class="game-meta">Canada Life Centre</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">New York Rangers</td><td>1</td><td>1</td><td>4</td><td class="rhe total">6</td></tr>
+        <tr><td class="">Winnipeg Jets</td><td>0</td><td>2</td><td>1</td><td class="rhe total">3</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>New York Rangers</th><th>Winnipeg Jets</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>1</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>2</td><td>1</td></tr><tr><td>Penalty Minutes</td><td>2</td><td>4</td></tr><tr><td>Faceoffs Won</td><td>23</td><td>30</td></tr><tr><td>Blocked Shots</td><td>18</td><td>15</td></tr><tr><td>Giveaways</td><td>20</td><td>18</td></tr><tr><td>Takeaways</td><td>6</td><td>1</td></tr><tr><td>Hits</td><td>24</td><td>23</td></tr><tr><td>Faceoff Win Percent</td><td>43.4</td><td>56.6</td></tr><tr><td>Power Play Percentage</td><td>50.0</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>17</td><td>26</td></tr><tr><td>Total Penalties</td><td>1</td><td>2</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Chicago Blackhawks</span><span class="team-score winner">3</span></div>
+        <div class="game-matchup"><span class="team-name">Utah Mammoth</span><span class="team-score">2</span></div>
+        <div class="game-meta">Delta Center</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>OT</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Chicago Blackhawks</td><td>0</td><td>0</td><td>2</td><td>1</td><td class="rhe total">3</td></tr>
+        <tr><td class="">Utah Mammoth</td><td>0</td><td>1</td><td>1</td><td>0</td><td class="rhe total">2 <small>(OT)</small></td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Chicago Blackhawks</th><th>Utah Mammoth</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>1</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>1</td><td>1</td></tr><tr><td>Penalty Minutes</td><td>4</td><td>4</td></tr><tr><td>Faceoffs Won</td><td>21</td><td>28</td></tr><tr><td>Blocked Shots</td><td>17</td><td>11</td></tr><tr><td>Giveaways</td><td>13</td><td>12</td></tr><tr><td>Takeaways</td><td>8</td><td>8</td></tr><tr><td>Hits</td><td>15</td><td>35</td></tr><tr><td>Faceoff Win Percent</td><td>42.9</td><td>57.1</td></tr><tr><td>Power Play Percentage</td><td>100.0</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>23</td><td>31</td></tr><tr><td>Total Penalties</td><td>2</td><td>2</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Nashville Predators</span><span class="team-score">3</span></div>
+        <div class="game-matchup"><span class="team-name">Vancouver Canucks</span><span class="team-score winner">4</span></div>
+        <div class="game-meta">Rogers Arena</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>SO</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Nashville Predators</td><td>1</td><td>2</td><td>0</td><td>0</td><td>0</td><td class="rhe total">3</td></tr>
+        <tr><td class="total">Vancouver Canucks</td><td>1</td><td>0</td><td>2</td><td>0</td><td>1</td><td class="rhe total">4 <small>(SO)</small></td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Nashville Predators</th><th>Vancouver Canucks</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>2</td><td>1</td></tr><tr><td>Penalty Minutes</td><td>4</td><td>6</td></tr><tr><td>Faceoffs Won</td><td>16</td><td>23</td></tr><tr><td>Blocked Shots</td><td>16</td><td>11</td></tr><tr><td>Giveaways</td><td>14</td><td>15</td></tr><tr><td>Takeaways</td><td>4</td><td>6</td></tr><tr><td>Hits</td><td>22</td><td>17</td></tr><tr><td>Faceoff Win Percent</td><td>41.0</td><td>59.0</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>19</td><td>27</td></tr><tr><td>Total Penalties</td><td>2</td><td>3</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Pittsburgh Penguins</span><span class="team-score">2</span></div>
+        <div class="game-matchup"><span class="team-name">Vegas Golden Knights</span><span class="team-score winner">6</span></div>
+        <div class="game-meta">T-Mobile Arena</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Pittsburgh Penguins</td><td>0</td><td>2</td><td>0</td><td class="rhe total">2</td></tr>
+        <tr><td class="total">Vegas Golden Knights</td><td>1</td><td>2</td><td>3</td><td class="rhe total">6</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Pittsburgh Penguins</th><th>Vegas Golden Knights</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>0</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>3</td><td>2</td></tr><tr><td>Penalty Minutes</td><td>10</td><td>12</td></tr><tr><td>Faceoffs Won</td><td>19</td><td>42</td></tr><tr><td>Blocked Shots</td><td>12</td><td>21</td></tr><tr><td>Giveaways</td><td>17</td><td>23</td></tr><tr><td>Takeaways</td><td>6</td><td>2</td></tr><tr><td>Hits</td><td>12</td><td>27</td></tr><tr><td>Faceoff Win Percent</td><td>31.1</td><td>68.9</td></tr><tr><td>Power Play Percentage</td><td>0.0</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>0</td></tr><tr><td>Shots</td><td>26</td><td>17</td></tr><tr><td>Total Penalties</td><td>5</td><td>6</td></tr></tbody>
+    </table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Colorado Avalanche</span><span class="team-score winner">5</span></div>
+        <div class="game-matchup"><span class="team-name">Seattle Kraken</span><span class="team-score">1</span></div>
+        <div class="game-meta">Climate Pledge Arena</div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Colorado Avalanche</td><td>3</td><td>1</td><td>1</td><td class="rhe total">5</td></tr>
+        <tr><td class="">Seattle Kraken</td><td>0</td><td>1</td><td>0</td><td class="rhe total">1</td></tr>
+      </tbody>
+    </table></div>
+      
+    <div class="subsection-title">Team Stats</div>
+    <table class="stats">
+      <thead><tr><th>Stat</th><th>Colorado Avalanche</th><th>Seattle Kraken</th></tr></thead>
+      <tbody><tr><td>Power Play Goals</td><td>1</td><td>0</td></tr><tr><td>Power Play Opportunities</td><td>3</td><td>2</td></tr><tr><td>Penalty Minutes</td><td>4</td><td>6</td></tr><tr><td>Faceoffs Won</td><td>24</td><td>31</td></tr><tr><td>Blocked Shots</td><td>19</td><td>10</td></tr><tr><td>Giveaways</td><td>21</td><td>16</td></tr><tr><td>Takeaways</td><td>4</td><td>4</td></tr><tr><td>Hits</td><td>17</td><td>16</td></tr><tr><td>Faceoff Win Percent</td><td>43.6</td><td>56.4</td></tr><tr><td>Power Play Percentage</td><td>33.3</td><td>0.0</td></tr><tr><td>Shootout Goals</td><td>0</td><td>0</td></tr><tr><td>Short Handed Goals</td><td>0</td><td>1</td></tr><tr><td>Shots</td><td>26</td><td>29</td></tr><tr><td>Total Penalties</td><td>2</td><td>2</td></tr></tbody>
+    </table>
+    </div>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <div class="subsection-title">NHL Standings</div><div class="div-title">Eastern Conference</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>OTL</th><th>PTS</th><th>STK</th></tr></thead><tbody><tr><td>Carolina Hurricanes</td><td>53</td><td>22</td><td>7</td><td>113</td><td>W1</td></tr><tr><td>Buffalo Sabres</td><td>50</td><td>23</td><td>9</td><td>109</td><td>L1</td></tr><tr><td>Tampa Bay Lightning</td><td>50</td><td>26</td><td>6</td><td>106</td><td>L1</td></tr><tr><td>Montreal Canadiens</td><td>48</td><td>24</td><td>10</td><td>106</td><td>L1</td></tr><tr><td>Boston Bruins</td><td>45</td><td>27</td><td>10</td><td>100</td><td>W2</td></tr><tr><td>Ottawa Senators</td><td>44</td><td>27</td><td>11</td><td>99</td><td>W1</td></tr><tr><td>Pittsburgh Penguins</td><td>41</td><td>25</td><td>16</td><td>98</td><td>L3</td></tr><tr><td>Philadelphia Flyers</td><td>43</td><td>27</td><td>12</td><td>98</td><td>W3</td></tr><tr><td>Washington Capitals</td><td>43</td><td>30</td><td>9</td><td>95</td><td>W4</td></tr><tr><td>Detroit Red Wings</td><td>41</td><td>31</td><td>10</td><td>92</td><td>L3</td></tr><tr><td>Columbus Blue Jackets</td><td>40</td><td>30</td><td>12</td><td>92</td><td>L2</td></tr><tr><td>New York Islanders</td><td>43</td><td>34</td><td>5</td><td>91</td><td>L3</td></tr><tr><td>New Jersey Devils</td><td>42</td><td>37</td><td>3</td><td>87</td><td>L1</td></tr><tr><td>Florida Panthers</td><td>40</td><td>38</td><td>4</td><td>84</td><td>W3</td></tr><tr><td>Toronto Maple Leafs</td><td>32</td><td>36</td><td>14</td><td>78</td><td>L7</td></tr><tr><td>New York Rangers</td><td>34</td><td>39</td><td>9</td><td>77</td><td>W1</td></tr></tbody></table><div class="div-title">Western Conference</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>OTL</th><th>PTS</th><th>STK</th></tr></thead><tbody><tr><td>Colorado Avalanche</td><td>55</td><td>16</td><td>11</td><td>121</td><td>W3</td></tr><tr><td>Dallas Stars</td><td>50</td><td>20</td><td>12</td><td>112</td><td>W5</td></tr><tr><td>Minnesota Wild</td><td>46</td><td>24</td><td>12</td><td>104</td><td>W1</td></tr><tr><td>Vegas Golden Knights</td><td>39</td><td>26</td><td>17</td><td>95</td><td>W3</td></tr><tr><td>Edmonton Oilers</td><td>41</td><td>30</td><td>11</td><td>93</td><td>W1</td></tr><tr><td>Utah Mammoth</td><td>43</td><td>33</td><td>6</td><td>92</td><td>L1</td></tr><tr><td>Anaheim Ducks</td><td>43</td><td>33</td><td>6</td><td>92</td><td>W1</td></tr><tr><td>Los Angeles Kings</td><td>35</td><td>27</td><td>20</td><td>90</td><td>L2</td></tr><tr><td>St. Louis Blues</td><td>37</td><td>33</td><td>12</td><td>86</td><td>W4</td></tr><tr><td>Nashville Predators</td><td>38</td><td>34</td><td>10</td><td>86</td><td>L2</td></tr><tr><td>San Jose Sharks</td><td>39</td><td>35</td><td>8</td><td>86</td><td>W1</td></tr><tr><td>Winnipeg Jets</td><td>35</td><td>35</td><td>12</td><td>82</td><td>L4</td></tr><tr><td>Seattle Kraken</td><td>34</td><td>37</td><td>11</td><td>79</td><td>L3</td></tr><tr><td>Calgary Flames</td><td>34</td><td>39</td><td>9</td><td>77</td><td>W1</td></tr><tr><td>Chicago Blackhawks</td><td>29</td><td>39</td><td>14</td><td>72</td><td>W1</td></tr><tr><td>Vancouver Canucks</td><td>25</td><td>49</td><td>8</td><td>58</td><td>L1</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="sport-section" data-sport="nba">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">NBA — Box Scores</div>
+        <div class="games-grid">
+          
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Philadelphia 76ers</span><span class="team-score">109</span></div>
+        <div class="game-matchup"><span class="team-name">Detroit Pistons</span><span class="team-score winner">131</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Philadelphia 76ers</td><td>27</td><td>33</td><td>21</td><td>28</td><td class="rhe total">109</td></tr>
+        <tr><td class="total">Detroit Pistons</td><td>36</td><td>33</td><td>35</td><td>27</td><td class="rhe total">131</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Philadelphia 76ers</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>MarJon Beauchamp <em>F</em></td><td>17</td><td>6</td><td>2</td><td>7-13</td><td>2-7</td><td>1-1</td></tr><tr><td>Jabari Walker <em>F</em></td><td>16</td><td>1</td><td>2</td><td>6-6</td><td>2-2</td><td>2-2</td></tr><tr><td>Cameron Payne <em>PG</em></td><td>15</td><td>1</td><td>2</td><td>5-10</td><td>2-6</td><td>3-4</td></tr><tr><td>Quentin Grimes <em>G</em></td><td>14</td><td>3</td><td>5</td><td>5-14</td><td>1-8</td><td>3-6</td></tr><tr><td>Justin Edwards <em>F</em></td><td>12</td><td>9</td><td>5</td><td>5-11</td><td>0-2</td><td>2-4</td></tr><tr><td>Dominick Barlow <em>F</em></td><td>11</td><td>4</td><td>0</td><td>5-10</td><td>1-3</td><td>0-0</td></tr><tr><td>VJ Edgecombe <em>G</em></td><td>10</td><td>5</td><td>0</td><td>3-14</td><td>0-5</td><td>4-4</td></tr><tr><td>Dalen Terry <em>F</em></td><td>8</td><td>3</td><td>2</td><td>3-6</td><td>0-1</td><td>2-3</td></tr><tr><td>Trendon Watford <em>F</em></td><td>4</td><td>2</td><td>1</td><td>2-5</td><td>0-1</td><td>0-0</td></tr><tr><td>Tyrese Martin <em>G</em></td><td>2</td><td>1</td><td>1</td><td>1-1</td><td>0-0</td><td>0-0</td></tr><tr><td>Kyle Lowry <em>G</em></td><td>0</td><td>0</td><td>0</td><td>0-0</td><td>0-0</td><td>0-0</td></tr></tbody></table>
+        <div class="subsection-title">Detroit Pistons</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Duncan Robinson <em>F</em></td><td>19</td><td>2</td><td>4</td><td>7-10</td><td>5-7</td><td>0-0</td></tr><tr><td>Javonte Green <em>G</em></td><td>17</td><td>2</td><td>1</td><td>5-8</td><td>4-6</td><td>3-3</td></tr><tr><td>Tobias Harris <em>F</em></td><td>15</td><td>5</td><td>2</td><td>6-11</td><td>2-3</td><td>1-1</td></tr><tr><td>Ronald Holland II <em>F</em></td><td>15</td><td>3</td><td>0</td><td>4-7</td><td>0-3</td><td>7-7</td></tr><tr><td>Jalen Duren <em>C</em></td><td>14</td><td>10</td><td>2</td><td>6-7</td><td>0-0</td><td>2-3</td></tr><tr><td>Isaiah Stewart <em>F</em></td><td>13</td><td>5</td><td>4</td><td>5-5</td><td>0-0</td><td>3-3</td></tr><tr><td>Kevin Huerter <em>G</em></td><td>12</td><td>4</td><td>4</td><td>4-13</td><td>2-7</td><td>2-2</td></tr><tr><td>Cade Cunningham <em>G</em></td><td>8</td><td>5</td><td>13</td><td>3-6</td><td>0-2</td><td>2-2</td></tr><tr><td>Marcus Sasser <em>G</em></td><td>6</td><td>0</td><td>3</td><td>2-9</td><td>1-4</td><td>1-1</td></tr><tr><td>Paul Reed <em>F</em></td><td>6</td><td>2</td><td>1</td><td>3-5</td><td>0-0</td><td>0-0</td></tr><tr><td>Daniss Jenkins <em>G</em></td><td>6</td><td>2</td><td>3</td><td>3-5</td><td>0-1</td><td>0-0</td></tr><tr><td>Chaz Lanier <em>G</em></td><td>0</td><td>0</td><td>0</td><td>0-3</td><td>0-2</td><td>0-0</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Phoenix Suns</span><span class="team-score winner">123</span></div>
+        <div class="game-matchup"><span class="team-name">Indiana Pacers</span><span class="team-score">108</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Phoenix Suns</td><td>36</td><td>31</td><td>29</td><td>27</td><td class="rhe total">123</td></tr>
+        <tr><td class="">Indiana Pacers</td><td>36</td><td>25</td><td>27</td><td>20</td><td class="rhe total">108</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Phoenix Suns</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Devin Booker <em>G</em></td><td>43</td><td>7</td><td>5</td><td>14-31</td><td>4-7</td><td>11-11</td></tr><tr><td>Jalen Green <em>G</em></td><td>36</td><td>3</td><td>4</td><td>14-23</td><td>3-9</td><td>5-7</td></tr><tr><td>Royce O'Neale <em>F</em></td><td>15</td><td>3</td><td>1</td><td>5-8</td><td>5-8</td><td>0-0</td></tr><tr><td>Oso Ighodaro <em>F</em></td><td>6</td><td>5</td><td>4</td><td>2-4</td><td>0-0</td><td>2-4</td></tr><tr><td>Jordan Goodwin <em>G</em></td><td>6</td><td>4</td><td>0</td><td>3-5</td><td>0-2</td><td>0-0</td></tr><tr><td>Ryan Dunn <em>F</em></td><td>5</td><td>2</td><td>1</td><td>2-2</td><td>1-1</td><td>0-0</td></tr><tr><td>Collin Gillespie <em>G</em></td><td>4</td><td>7</td><td>5</td><td>2-6</td><td>0-2</td><td>0-0</td></tr><tr><td>Khaman Maluach <em>C</em></td><td>4</td><td>3</td><td>0</td><td>2-2</td><td>0-0</td><td>0-0</td></tr><tr><td>Rasheer Fleming <em>F</em></td><td>2</td><td>5</td><td>1</td><td>1-4</td><td>0-1</td><td>0-0</td></tr><tr><td>Amir Coffey <em>G</em></td><td>2</td><td>1</td><td>0</td><td>1-1</td><td>0-0</td><td>0-0</td></tr><tr><td>Isaiah Livers <em>F</em></td><td>0</td><td>0</td><td>0</td><td>0-0</td><td>0-0</td><td>0-0</td></tr><tr><td>Jamaree Bouyea <em>G</em></td><td>0</td><td>0</td><td>0</td><td>0-2</td><td>0-2</td><td>0-0</td></tr></tbody></table>
+        <div class="subsection-title">Indiana Pacers</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Andrew Nembhard <em>G</em></td><td>23</td><td>0</td><td>2</td><td>6-7</td><td>2-2</td><td>9-10</td></tr><tr><td>Jarace Walker <em>F</em></td><td>12</td><td>6</td><td>2</td><td>3-6</td><td>1-2</td><td>5-6</td></tr><tr><td>Ethan Thompson <em>G</em></td><td>11</td><td>2</td><td>2</td><td>4-11</td><td>2-7</td><td>1-1</td></tr><tr><td>Jalen Slawson <em>F</em></td><td>10</td><td>8</td><td>5</td><td>3-9</td><td>1-5</td><td>3-4</td></tr><tr><td>Jay Huff <em>C</em></td><td>10</td><td>2</td><td>0</td><td>5-11</td><td>0-4</td><td>0-0</td></tr><tr><td>Ben Sheppard <em>G</em></td><td>10</td><td>2</td><td>1</td><td>4-5</td><td>2-3</td><td>0-0</td></tr><tr><td>Ivica Zubac <em>C</em></td><td>8</td><td>6</td><td>2</td><td>4-6</td><td>0-0</td><td>0-0</td></tr><tr><td>Micah Potter <em>C</em></td><td>8</td><td>4</td><td>1</td><td>2-4</td><td>0-1</td><td>4-4</td></tr><tr><td>Kobe Brown <em>G</em></td><td>7</td><td>2</td><td>2</td><td>3-9</td><td>1-6</td><td>0-0</td></tr><tr><td>Taelon Peter <em>G</em></td><td>6</td><td>3</td><td>1</td><td>2-6</td><td>2-6</td><td>0-0</td></tr><tr><td>Kam Jones <em>G</em></td><td>3</td><td>1</td><td>6</td><td>1-8</td><td>1-4</td><td>0-0</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Washington Wizards</span><span class="team-score">131</span></div>
+        <div class="game-matchup"><span class="team-name">Orlando Magic</span><span class="team-score winner">136</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>OT</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Washington Wizards</td><td>26</td><td>30</td><td>25</td><td>42</td><td>8</td><td class="rhe total">131</td></tr>
+        <tr><td class="total">Orlando Magic</td><td>36</td><td>27</td><td>33</td><td>27</td><td>13</td><td class="rhe total">136</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Washington Wizards</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Bilal Coulibaly <em>G</em></td><td>29</td><td>5</td><td>5</td><td>9-21</td><td>5-11</td><td>6-6</td></tr><tr><td>Alex Sarr <em>C</em></td><td>16</td><td>4</td><td>0</td><td>6-12</td><td>1-4</td><td>3-4</td></tr><tr><td>Trae Young <em>G</em></td><td>15</td><td>3</td><td>6</td><td>5-7</td><td>2-4</td><td>3-3</td></tr><tr><td>Leaky Black <em>F</em></td><td>12</td><td>4</td><td>3</td><td>4-5</td><td>2-2</td><td>2-2</td></tr><tr><td>Justin Champagnie <em>F</em></td><td>12</td><td>4</td><td>1</td><td>6-9</td><td>0-1</td><td>0-0</td></tr><tr><td>Bub Carrington <em>G</em></td><td>12</td><td>5</td><td>5</td><td>5-7</td><td>0-2</td><td>2-2</td></tr><tr><td>Tristan Vukcevic <em>F</em></td><td>11</td><td>11</td><td>1</td><td>5-12</td><td>1-5</td><td>0-0</td></tr><tr><td>Will Riley <em>G</em></td><td>8</td><td>5</td><td>0</td><td>3-10</td><td>1-6</td><td>1-2</td></tr><tr><td>Jamir Watkins <em>G</em></td><td>7</td><td>1</td><td>1</td><td>2-5</td><td>1-4</td><td>2-3</td></tr><tr><td>Anthony Gill <em>F</em></td><td>4</td><td>2</td><td>2</td><td>2-5</td><td>0-1</td><td>0-0</td></tr><tr><td>Tre Johnson <em>G</em></td><td>3</td><td>5</td><td>1</td><td>1-11</td><td>1-6</td><td>0-0</td></tr><tr><td>Sharife Cooper <em>G</em></td><td>2</td><td>0</td><td>1</td><td>0-1</td><td>0-0</td><td>2-2</td></tr></tbody></table>
+        <div class="subsection-title">Orlando Magic</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Jalen Suggs <em>G</em></td><td>28</td><td>4</td><td>8</td><td>10-17</td><td>3-8</td><td>5-6</td></tr><tr><td>Tristan da Silva <em>F</em></td><td>26</td><td>7</td><td>2</td><td>10-18</td><td>3-6</td><td>3-3</td></tr><tr><td>Desmond Bane <em>G</em></td><td>22</td><td>1</td><td>6</td><td>7-14</td><td>2-5</td><td>6-6</td></tr><tr><td>Wendell Carter Jr. <em>C</em></td><td>19</td><td>11</td><td>3</td><td>8-13</td><td>2-3</td><td>1-2</td></tr><tr><td>Paolo Banchero <em>F</em></td><td>18</td><td>10</td><td>5</td><td>4-13</td><td>0-2</td><td>10-14</td></tr><tr><td>Jett Howard <em>G</em></td><td>10</td><td>6</td><td>2</td><td>3-8</td><td>2-3</td><td>2-2</td></tr><tr><td>Moritz Wagner <em>F</em></td><td>7</td><td>5</td><td>0</td><td>3-8</td><td>1-1</td><td>0-1</td></tr><tr><td>Jevon Carter <em>G</em></td><td>6</td><td>2</td><td>2</td><td>2-6</td><td>2-6</td><td>0-0</td></tr><tr><td>Jonathan Isaac <em>F</em></td><td>0</td><td>1</td><td>0</td><td>0-1</td><td>0-0</td><td>0-0</td></tr><tr><td>Noah Penda <em>F</em></td><td>0</td><td>3</td><td>2</td><td>0-0</td><td>0-0</td><td>0-0</td></tr><tr><td>Goga Bitadze <em>C</em></td><td>0</td><td>2</td><td>0</td><td>0-2</td><td>0-0</td><td>0-0</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Brooklyn Nets</span><span class="team-score">97</span></div>
+        <div class="game-matchup"><span class="team-name">Atlanta Hawks</span><span class="team-score winner">108</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Brooklyn Nets</td><td>21</td><td>29</td><td>29</td><td>18</td><td class="rhe total">97</td></tr>
+        <tr><td class="total">Atlanta Hawks</td><td>30</td><td>27</td><td>25</td><td>26</td><td class="rhe total">108</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Brooklyn Nets</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Josh Minott <em>F</em></td><td>24</td><td>3</td><td>1</td><td>6-9</td><td>4-7</td><td>8-10</td></tr><tr><td>Drake Powell <em>G</em></td><td>11</td><td>1</td><td>3</td><td>4-13</td><td>1-6</td><td>2-2</td></tr><tr><td>Noah Clowney <em>F</em></td><td>10</td><td>6</td><td>1</td><td>4-9</td><td>2-4</td><td>0-0</td></tr><tr><td>Ben Saraf <em>G</em></td><td>10</td><td>1</td><td>4</td><td>4-7</td><td>0-2</td><td>2-2</td></tr><tr><td>Danny Wolf <em>F</em></td><td>8</td><td>8</td><td>2</td><td>2-7</td><td>1-5</td><td>3-4</td></tr><tr><td>Nic Claxton <em>C</em></td><td>8</td><td>4</td><td>2</td><td>4-6</td><td>0-0</td><td>0-2</td></tr><tr><td>Terance Mann <em>G</em></td><td>8</td><td>2</td><td>1</td><td>3-5</td><td>0-0</td><td>2-2</td></tr><tr><td>Tyson Etienne <em>G</em></td><td>6</td><td>3</td><td>2</td><td>2-5</td><td>2-5</td><td>0-0</td></tr><tr><td>Jalen Wilson <em>F</em></td><td>5</td><td>2</td><td>0</td><td>2-5</td><td>1-3</td><td>0-0</td></tr><tr><td>E.J. Liddell <em>F</em></td><td>4</td><td>6</td><td>0</td><td>2-3</td><td>0-1</td><td>0-0</td></tr><tr><td>Chaney Johnson <em>F</em></td><td>3</td><td>3</td><td>3</td><td>1-3</td><td>1-2</td><td>0-0</td></tr></tbody></table>
+        <div class="subsection-title">Atlanta Hawks</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Jalen Johnson <em>F</em></td><td>21</td><td>9</td><td>9</td><td>7-15</td><td>4-7</td><td>3-4</td></tr><tr><td>Zaccharie Risacher <em>F</em></td><td>19</td><td>9</td><td>1</td><td>6-12</td><td>3-5</td><td>4-6</td></tr><tr><td>Nickeil Alexander-Walker <em>G</em></td><td>18</td><td>2</td><td>2</td><td>5-13</td><td>2-8</td><td>6-6</td></tr><tr><td>CJ McCollum <em>G</em></td><td>14</td><td>4</td><td>2</td><td>6-17</td><td>0-7</td><td>2-2</td></tr><tr><td>Onyeka Okongwu <em>F</em></td><td>13</td><td>9</td><td>0</td><td>4-10</td><td>0-3</td><td>5-7</td></tr><tr><td>Corey Kispert <em>F</em></td><td>7</td><td>3</td><td>4</td><td>2-8</td><td>1-5</td><td>2-2</td></tr><tr><td>Gabe Vincent <em>G</em></td><td>6</td><td>3</td><td>2</td><td>2-4</td><td>2-4</td><td>0-0</td></tr><tr><td>Mouhamed Gueye <em>F</em></td><td>4</td><td>1</td><td>0</td><td>1-1</td><td>0-0</td><td>2-2</td></tr><tr><td>Jock Landale <em>C</em></td><td>4</td><td>2</td><td>0</td><td>2-5</td><td>0-1</td><td>0-2</td></tr><tr><td>Jonathan Kuminga <em>F</em></td><td>2</td><td>9</td><td>2</td><td>0-4</td><td>0-0</td><td>2-4</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Milwaukee Bucks</span><span class="team-score">105</span></div>
+        <div class="game-matchup"><span class="team-name">Miami Heat</span><span class="team-score winner">112</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Milwaukee Bucks</td><td>21</td><td>30</td><td>26</td><td>28</td><td class="rhe total">105</td></tr>
+        <tr><td class="total">Miami Heat</td><td>31</td><td>28</td><td>26</td><td>27</td><td class="rhe total">112</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Milwaukee Bucks</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Giannis Antetokounmpo <em>F</em></td><td>31</td><td>6</td><td>3</td><td>12-24</td><td>0-2</td><td>7-11</td></tr><tr><td>Bobby Portis <em>F</em></td><td>19</td><td>5</td><td>1</td><td>8-14</td><td>2-4</td><td>1-1</td></tr><tr><td>Ryan Rollins <em>G</em></td><td>16</td><td>5</td><td>10</td><td>6-9</td><td>2-4</td><td>2-2</td></tr><tr><td>Taurean Prince <em>F</em></td><td>8</td><td>1</td><td>0</td><td>3-6</td><td>2-3</td><td>0-0</td></tr><tr><td>Myles Turner <em>C</em></td><td>7</td><td>4</td><td>2</td><td>2-7</td><td>1-5</td><td>2-2</td></tr><tr><td>Jericho Sims <em>C</em></td><td>7</td><td>4</td><td>2</td><td>3-3</td><td>0-0</td><td>1-1</td></tr><tr><td>Kevin Porter Jr. <em>G</em></td><td>6</td><td>7</td><td>5</td><td>3-8</td><td>0-1</td><td>0-0</td></tr><tr><td>Kyle Kuzma <em>F</em></td><td>5</td><td>3</td><td>1</td><td>2-5</td><td>1-4</td><td>0-0</td></tr><tr><td>AJ Green <em>G</em></td><td>3</td><td>0</td><td>2</td><td>1-2</td><td>1-2</td><td>0-0</td></tr><tr><td>Cam Thomas <em>G</em></td><td>3</td><td>1</td><td>0</td><td>1-3</td><td>0-1</td><td>1-2</td></tr><tr><td>Ousmane Dieng <em>F</em></td><td>0</td><td>0</td><td>0</td><td>0-2</td><td>0-0</td><td>0-0</td></tr></tbody></table>
+        <div class="subsection-title">Miami Heat</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Pelle Larsson <em>G</em></td><td>28</td><td>6</td><td>6</td><td>9-14</td><td>2-3</td><td>8-8</td></tr><tr><td>Bam Adebayo <em>C</em></td><td>21</td><td>8</td><td>2</td><td>6-20</td><td>0-5</td><td>9-13</td></tr><tr><td>Kasparas Jakucionis <em>G</em></td><td>18</td><td>7</td><td>2</td><td>6-12</td><td>5-11</td><td>1-1</td></tr><tr><td>Davion Mitchell <em>G</em></td><td>13</td><td>5</td><td>5</td><td>5-9</td><td>3-5</td><td>0-0</td></tr><tr><td>Dru Smith <em>G</em></td><td>9</td><td>4</td><td>2</td><td>4-7</td><td>0-1</td><td>1-1</td></tr><tr><td>Simone Fontecchio <em>F</em></td><td>8</td><td>2</td><td>1</td><td>3-9</td><td>2-6</td><td>0-0</td></tr><tr><td>Kel'el Ware <em>C</em></td><td>6</td><td>13</td><td>1</td><td>2-9</td><td>1-4</td><td>1-2</td></tr><tr><td>Jaime Jaquez Jr. <em>F</em></td><td>6</td><td>4</td><td>7</td><td>2-11</td><td>0-5</td><td>2-2</td></tr><tr><td>Myron Gardner <em>F</em></td><td>3</td><td>4</td><td>0</td><td>1-1</td><td>1-1</td><td>0-0</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Dallas Mavericks</span><span class="team-score winner">120</span></div>
+        <div class="game-matchup"><span class="team-name">Memphis Grizzlies</span><span class="team-score">112</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Dallas Mavericks</td><td>34</td><td>31</td><td>21</td><td>34</td><td class="rhe total">120</td></tr>
+        <tr><td class="">Memphis Grizzlies</td><td>22</td><td>32</td><td>30</td><td>28</td><td class="rhe total">112</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Dallas Mavericks</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Khris Middleton <em>F</em></td><td>35</td><td>2</td><td>1</td><td>10-17</td><td>8-10</td><td>7-7</td></tr><tr><td>Daniel Gafford <em>F</em></td><td>22</td><td>14</td><td>1</td><td>9-12</td><td>0-0</td><td>4-7</td></tr><tr><td>Cooper Flagg <em>F</em></td><td>13</td><td>6</td><td>7</td><td>6-16</td><td>0-3</td><td>1-2</td></tr><tr><td>Max Christie <em>G</em></td><td>13</td><td>0</td><td>0</td><td>5-12</td><td>3-8</td><td>0-0</td></tr><tr><td>P.J. Washington <em>F</em></td><td>12</td><td>10</td><td>1</td><td>5-12</td><td>0-3</td><td>2-2</td></tr><tr><td>Brandon Williams <em>G</em></td><td>12</td><td>8</td><td>5</td><td>4-8</td><td>0-3</td><td>4-4</td></tr><tr><td>Marvin Bagley III <em>F</em></td><td>6</td><td>9</td><td>0</td><td>3-5</td><td>0-1</td><td>0-0</td></tr><tr><td>Naji Marshall <em>F</em></td><td>5</td><td>6</td><td>3</td><td>2-7</td><td>0-3</td><td>1-2</td></tr><tr><td>Caleb Martin <em>F</em></td><td>2</td><td>3</td><td>1</td><td>1-3</td><td>0-1</td><td>0-0</td></tr><tr><td>Dwight Powell <em>F</em></td><td>0</td><td>0</td><td>1</td><td>0-0</td><td>0-0</td><td>0-0</td></tr><tr><td>Ryan Nembhard <em>G</em></td><td>0</td><td>2</td><td>5</td><td>0-1</td><td>0-0</td><td>0-0</td></tr><tr><td>AJ Johnson <em>G</em></td><td>0</td><td>0</td><td>0</td><td>0-0</td><td>0-0</td><td>0-0</td></tr></tbody></table>
+        <div class="subsection-title">Memphis Grizzlies</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Jaylen Wells <em>F</em></td><td>23</td><td>2</td><td>2</td><td>7-15</td><td>3-7</td><td>6-6</td></tr><tr><td>GG Jackson <em>F</em></td><td>20</td><td>4</td><td>3</td><td>8-15</td><td>1-6</td><td>3-5</td></tr><tr><td>Javon Small <em>G</em></td><td>19</td><td>2</td><td>9</td><td>6-12</td><td>3-6</td><td>4-4</td></tr><tr><td>Taylor Hendricks <em>F</em></td><td>17</td><td>10</td><td>2</td><td>7-12</td><td>3-6</td><td>0-0</td></tr><tr><td>Rayan Rupert <em>G</em></td><td>13</td><td>7</td><td>2</td><td>5-11</td><td>1-4</td><td>2-2</td></tr><tr><td>Olivier-Maxence Prosper <em>F</em></td><td>9</td><td>8</td><td>2</td><td>4-13</td><td>1-8</td><td>0-3</td></tr><tr><td>Jahmai Mashack <em>G</em></td><td>8</td><td>4</td><td>6</td><td>3-11</td><td>1-4</td><td>1-2</td></tr><tr><td>Tyler Burton <em>F</em></td><td>3</td><td>1</td><td>0</td><td>1-9</td><td>1-7</td><td>0-0</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Denver Nuggets</span><span class="team-score winner">136</span></div>
+        <div class="game-matchup"><span class="team-name">San Antonio Spurs</span><span class="team-score">131</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="total">Denver Nuggets</td><td>25</td><td>28</td><td>41</td><td>42</td><td class="rhe total">136</td></tr>
+        <tr><td class="">San Antonio Spurs</td><td>37</td><td>32</td><td>37</td><td>25</td><td class="rhe total">131</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Denver Nuggets</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Jamal Murray <em>G</em></td><td>39</td><td>2</td><td>7</td><td>11-21</td><td>2-6</td><td>15-15</td></tr><tr><td>Nikola Jokic <em>C</em></td><td>31</td><td>20</td><td>12</td><td>9-17</td><td>2-6</td><td>11-11</td></tr><tr><td>Spencer Jones <em>F</em></td><td>19</td><td>4</td><td>2</td><td>8-13</td><td>3-6</td><td>0-0</td></tr><tr><td>Cameron Johnson <em>F</em></td><td>15</td><td>5</td><td>1</td><td>6-8</td><td>1-2</td><td>2-2</td></tr><tr><td>Christian Braun <em>G</em></td><td>11</td><td>9</td><td>2</td><td>3-11</td><td>2-7</td><td>3-4</td></tr><tr><td>Julian Strawther <em>G</em></td><td>10</td><td>2</td><td>1</td><td>4-6</td><td>2-4</td><td>0-0</td></tr><tr><td>Bruce Brown <em>G</em></td><td>6</td><td>1</td><td>0</td><td>2-5</td><td>0-2</td><td>2-2</td></tr><tr><td>Jonas Valanciunas <em>C</em></td><td>4</td><td>2</td><td>1</td><td>1-3</td><td>0-0</td><td>2-2</td></tr><tr><td>Tim Hardaway Jr. <em>G</em></td><td>1</td><td>2</td><td>1</td><td>0-4</td><td>0-3</td><td>1-2</td></tr><tr><td>Tyus Jones <em>G</em></td><td>0</td><td>0</td><td>0</td><td>0-0</td><td>0-0</td><td>0-0</td></tr></tbody></table>
+        <div class="subsection-title">San Antonio Spurs</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Stephon Castle <em>G</em></td><td>30</td><td>11</td><td>10</td><td>7-15</td><td>4-8</td><td>12-13</td></tr><tr><td>De'Aaron Fox <em>G</em></td><td>27</td><td>3</td><td>9</td><td>10-19</td><td>4-10</td><td>3-6</td></tr><tr><td>Harrison Barnes <em>F</em></td><td>20</td><td>7</td><td>1</td><td>6-10</td><td>2-5</td><td>6-7</td></tr><tr><td>Devin Vassell <em>G</em></td><td>18</td><td>1</td><td>3</td><td>5-14</td><td>4-10</td><td>4-5</td></tr><tr><td>Dylan Harper <em>G</em></td><td>13</td><td>5</td><td>5</td><td>6-12</td><td>1-3</td><td>0-0</td></tr><tr><td>Carter Bryant <em>F</em></td><td>10</td><td>3</td><td>1</td><td>4-6</td><td>1-2</td><td>1-1</td></tr><tr><td>Julian Champagnie <em>F</em></td><td>8</td><td>7</td><td>1</td><td>3-7</td><td>2-4</td><td>0-0</td></tr><tr><td>Keldon Johnson <em>F</em></td><td>5</td><td>7</td><td>3</td><td>2-12</td><td>1-5</td><td>0-0</td></tr><tr><td>Luke Kornet <em>C</em></td><td>0</td><td>3</td><td>0</td><td>0-0</td><td>0-0</td><td>0-0</td></tr><tr><td>Mason Plumlee <em>C</em></td><td>0</td><td>2</td><td>1</td><td>0-0</td><td>0-0</td><td>0-0</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Boston Celtics</span><span class="team-score">102</span></div>
+        <div class="game-matchup"><span class="team-name">Oklahoma City Thunder</span><span class="team-score winner">104</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Boston Celtics</td><td>28</td><td>31</td><td>24</td><td>19</td><td class="rhe total">102</td></tr>
+        <tr><td class="total">Oklahoma City Thunder</td><td>27</td><td>29</td><td>24</td><td>24</td><td class="rhe total">104</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Boston Celtics</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Jaylen Brown <em>G</em></td><td>34</td><td>6</td><td>7</td><td>10-25</td><td>1-4</td><td>13-14</td></tr><tr><td>Payton Pritchard <em>G</em></td><td>14</td><td>4</td><td>4</td><td>6-17</td><td>2-9</td><td>0-0</td></tr><tr><td>Baylor Scheierman <em>G</em></td><td>11</td><td>7</td><td>5</td><td>4-10</td><td>3-8</td><td>0-0</td></tr><tr><td>Hugo Gonzalez <em>G</em></td><td>11</td><td>5</td><td>1</td><td>4-7</td><td>1-2</td><td>2-2</td></tr><tr><td>Sam Hauser <em>F</em></td><td>8</td><td>4</td><td>1</td><td>3-10</td><td>2-8</td><td>0-0</td></tr><tr><td>Jordan Walsh <em>G</em></td><td>8</td><td>3</td><td>1</td><td>3-4</td><td>2-3</td><td>0-0</td></tr><tr><td>Luka Garza <em>C</em></td><td>7</td><td>4</td><td>0</td><td>2-6</td><td>1-5</td><td>2-2</td></tr><tr><td>Ron Harper Jr. <em>G</em></td><td>5</td><td>1</td><td>1</td><td>2-4</td><td>1-3</td><td>0-0</td></tr><tr><td>Neemias Queta <em>C</em></td><td>4</td><td>10</td><td>0</td><td>1-4</td><td>0-0</td><td>2-2</td></tr></tbody></table>
+        <div class="subsection-title">Oklahoma City Thunder</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Shai Gilgeous-Alexander <em>G</em></td><td>35</td><td>6</td><td>9</td><td>13-18</td><td>2-5</td><td>7-8</td></tr><tr><td>Ajay Mitchell <em>G</em></td><td>15</td><td>4</td><td>6</td><td>6-10</td><td>1-3</td><td>2-3</td></tr><tr><td>Chet Holmgren <em>C</em></td><td>14</td><td>9</td><td>0</td><td>5-10</td><td>1-4</td><td>3-3</td></tr><tr><td>Jaylin Williams <em>F</em></td><td>9</td><td>2</td><td>1</td><td>3-5</td><td>3-5</td><td>0-0</td></tr><tr><td>Aaron Wiggins <em>G</em></td><td>9</td><td>3</td><td>0</td><td>4-6</td><td>0-2</td><td>1-2</td></tr><tr><td>Alex Caruso <em>G</em></td><td>7</td><td>4</td><td>2</td><td>3-11</td><td>1-8</td><td>0-0</td></tr><tr><td>Luguentz Dort <em>G</em></td><td>6</td><td>6</td><td>1</td><td>2-8</td><td>2-8</td><td>0-0</td></tr><tr><td>Cason Wallace <em>G</em></td><td>4</td><td>3</td><td>3</td><td>2-8</td><td>0-4</td><td>0-0</td></tr><tr><td>Jared McCain <em>G</em></td><td>3</td><td>1</td><td>0</td><td>1-6</td><td>1-4</td><td>0-0</td></tr><tr><td>Isaiah Joe <em>G</em></td><td>2</td><td>1</td><td>0</td><td>1-2</td><td>0-1</td><td>0-1</td></tr></tbody></table>
+    </div>
+    <div class="game-box">
+      <div class="game-header">
+        <div class="game-matchup"><span class="team-name">Chicago Bulls</span><span class="team-score">130</span></div>
+        <div class="game-matchup"><span class="team-name">Los Angeles Lakers</span><span class="team-score winner">142</span></div>
+      </div>
+      
+    <div class="linescore-wrap">
+    <table class="linescore">
+      <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th class="rhe">F</th></tr></thead>
+      <tbody>
+        <tr><td class="">Chicago Bulls</td><td>26</td><td>36</td><td>36</td><td>32</td><td class="rhe total">130</td></tr>
+        <tr><td class="total">Los Angeles Lakers</td><td>26</td><td>41</td><td>41</td><td>34</td><td class="rhe total">142</td></tr>
+      </tbody>
+    </table></div>
+      
+        <div class="subsection-title">Chicago Bulls</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Josh Giddey <em>G</em></td><td>27</td><td>8</td><td>15</td><td>10-17</td><td>6-9</td><td>1-2</td></tr><tr><td>Matas Buzelis <em>F</em></td><td>22</td><td>6</td><td>1</td><td>7-19</td><td>4-11</td><td>4-5</td></tr><tr><td>Tre Jones <em>G</em></td><td>18</td><td>4</td><td>6</td><td>8-16</td><td>0-2</td><td>2-2</td></tr><tr><td>Leonard Miller <em>F</em></td><td>15</td><td>9</td><td>1</td><td>6-9</td><td>1-3</td><td>2-2</td></tr><tr><td>Nick Richards <em>C</em></td><td>15</td><td>4</td><td>1</td><td>7-9</td><td>0-1</td><td>1-1</td></tr><tr><td>Jalen Smith <em>F</em></td><td>14</td><td>4</td><td>0</td><td>5-11</td><td>2-5</td><td>2-2</td></tr><tr><td>Rob Dillingham <em>G</em></td><td>12</td><td>5</td><td>7</td><td>5-10</td><td>1-3</td><td>1-2</td></tr><tr><td>Lachlan Olbrich <em>C</em></td><td>4</td><td>0</td><td>1</td><td>2-2</td><td>0-0</td><td>0-0</td></tr><tr><td>Yuki Kawamura <em>G</em></td><td>3</td><td>1</td><td>2</td><td>1-2</td><td>1-2</td><td>0-0</td></tr></tbody></table>
+        <div class="subsection-title">Los Angeles Lakers</div>
+        <table class="stats"><thead><tr><th>Player</th><th>PTS</th><th>REB</th><th>AST</th><th>FG</th><th>3P</th><th>FT</th></tr></thead>
+        <tbody><tr><td>Luka Doncic <em>G</em></td><td>51</td><td>10</td><td>9</td><td>17-31</td><td>9-14</td><td>8-9</td></tr><tr><td>Austin Reaves <em>G</em></td><td>30</td><td>5</td><td>7</td><td>13-20</td><td>4-7</td><td>0-0</td></tr><tr><td>Deandre Ayton <em>C</em></td><td>23</td><td>10</td><td>1</td><td>10-13</td><td>0-0</td><td>3-6</td></tr><tr><td>LeBron James <em>F</em></td><td>18</td><td>7</td><td>7</td><td>7-13</td><td>0-2</td><td>4-6</td></tr><tr><td>Rui Hachimura <em>F</em></td><td>15</td><td>1</td><td>1</td><td>6-10</td><td>3-5</td><td>0-0</td></tr><tr><td>Luke Kennard <em>G</em></td><td>3</td><td>1</td><td>2</td><td>1-7</td><td>1-5</td><td>0-0</td></tr><tr><td>Drew Timme <em>F</em></td><td>2</td><td>2</td><td>0</td><td>1-2</td><td>0-1</td><td>0-0</td></tr><tr><td>Jarred Vanderbilt <em>F</em></td><td>0</td><td>2</td><td>1</td><td>0-0</td><td>0-0</td><td>0-0</td></tr><tr><td>Jake LaRavia <em>F</em></td><td>0</td><td>3</td><td>3</td><td>0-3</td><td>0-2</td><td>0-0</td></tr></tbody></table>
+    </div>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <div class="subsection-title">NBA Standings</div><div class="div-title">Eastern Conference</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th><th>STK</th></tr></thead><tbody><tr><td>Detroit Pistons</td><td>60</td><td>22</td><td>.732</td><td>-</td><td>W3</td></tr><tr><td>Boston Celtics</td><td>56</td><td>26</td><td>.683</td><td>4</td><td>W2</td></tr><tr><td>New York Knicks</td><td>53</td><td>29</td><td>.646</td><td>7</td><td>L1</td></tr><tr><td>Cleveland Cavaliers</td><td>52</td><td>30</td><td>.634</td><td>8</td><td>W1</td></tr><tr><td>Atlanta Hawks</td><td>46</td><td>36</td><td>.561</td><td>14</td><td>L1</td></tr><tr><td>Toronto Raptors</td><td>46</td><td>36</td><td>.561</td><td>14</td><td>W1</td></tr><tr><td>Philadelphia 76ers</td><td>45</td><td>37</td><td>.549</td><td>15</td><td>W2</td></tr><tr><td>Orlando Magic</td><td>45</td><td>37</td><td>.549</td><td>15</td><td>L1</td></tr><tr><td>Charlotte Hornets</td><td>44</td><td>38</td><td>.537</td><td>16</td><td>W1</td></tr><tr><td>Miami Heat</td><td>43</td><td>39</td><td>.524</td><td>17</td><td>W2</td></tr><tr><td>Milwaukee Bucks</td><td>32</td><td>50</td><td>.390</td><td>28</td><td>L1</td></tr><tr><td>Chicago Bulls</td><td>31</td><td>51</td><td>.378</td><td>29</td><td>L2</td></tr><tr><td>Brooklyn Nets</td><td>20</td><td>62</td><td>.244</td><td>40</td><td>L3</td></tr><tr><td>Indiana Pacers</td><td>19</td><td>63</td><td>.232</td><td>41</td><td>L2</td></tr><tr><td>Washington Wizards</td><td>17</td><td>65</td><td>.207</td><td>43</td><td>L10</td></tr></tbody></table><div class="div-title">Western Conference</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th><th>STK</th></tr></thead><tbody><tr><td>Oklahoma City Thunder</td><td>64</td><td>18</td><td>.780</td><td>-</td><td>L2</td></tr><tr><td>San Antonio Spurs</td><td>62</td><td>20</td><td>.756</td><td>2</td><td>L1</td></tr><tr><td>Denver Nuggets</td><td>54</td><td>28</td><td>.659</td><td>10</td><td>W12</td></tr><tr><td>Los Angeles Lakers</td><td>53</td><td>29</td><td>.646</td><td>11</td><td>W3</td></tr><tr><td>Houston Rockets</td><td>52</td><td>30</td><td>.634</td><td>12</td><td>W1</td></tr><tr><td>Minnesota Timberwolves</td><td>49</td><td>33</td><td>.598</td><td>15</td><td>W2</td></tr><tr><td>Phoenix Suns</td><td>45</td><td>37</td><td>.549</td><td>19</td><td>W1</td></tr><tr><td>Portland Trail Blazers</td><td>42</td><td>40</td><td>.512</td><td>22</td><td>W2</td></tr><tr><td>LA Clippers</td><td>42</td><td>40</td><td>.512</td><td>22</td><td>W1</td></tr><tr><td>Golden State Warriors</td><td>37</td><td>45</td><td>.451</td><td>27</td><td>L3</td></tr><tr><td>New Orleans Pelicans</td><td>26</td><td>56</td><td>.317</td><td>38</td><td>L2</td></tr><tr><td>Dallas Mavericks</td><td>26</td><td>56</td><td>.317</td><td>38</td><td>W1</td></tr><tr><td>Memphis Grizzlies</td><td>25</td><td>57</td><td>.305</td><td>39</td><td>L8</td></tr><tr><td>Sacramento Kings</td><td>22</td><td>60</td><td>.268</td><td>42</td><td>L1</td></tr><tr><td>Utah Jazz</td><td>22</td><td>60</td><td>.268</td><td>42</td><td>L1</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="sport-section" data-sport="nfl">
+    <div class="main">
+      <div class="games-col">
+        <div class="section-title">NFL — Box Scores</div>
+        <div class="games-grid">
+          <p class="no-games">No completed games.</p>
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="section-title">Standings</div>
+        <div class="subsection-title">NFL Standings</div><div class="div-title">American Football Conference</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>T</th><th>PCT</th><th>PF</th><th>PA</th></tr></thead><tbody><tr><td>New England Patriots</td><td>14</td><td>3</td><td>0</td><td>.824</td><td>490</td><td>320</td></tr><tr><td>Jacksonville Jaguars</td><td>13</td><td>4</td><td>0</td><td>.765</td><td>474</td><td>336</td></tr><tr><td>Pittsburgh Steelers</td><td>10</td><td>7</td><td>0</td><td>.588</td><td>397</td><td>387</td></tr><tr><td>Houston Texans</td><td>12</td><td>5</td><td>0</td><td>.706</td><td>404</td><td>295</td></tr><tr><td>Buffalo Bills</td><td>12</td><td>5</td><td>0</td><td>.706</td><td>481</td><td>365</td></tr><tr><td>Los Angeles Chargers</td><td>11</td><td>6</td><td>0</td><td>.647</td><td>368</td><td>340</td></tr><tr><td>Indianapolis Colts</td><td>8</td><td>9</td><td>0</td><td>.471</td><td>466</td><td>412</td></tr><tr><td>Baltimore Ravens</td><td>8</td><td>9</td><td>0</td><td>.471</td><td>424</td><td>398</td></tr><tr><td>Miami Dolphins</td><td>7</td><td>10</td><td>0</td><td>.412</td><td>347</td><td>424</td></tr><tr><td>Cincinnati Bengals</td><td>6</td><td>11</td><td>0</td><td>.353</td><td>414</td><td>492</td></tr><tr><td>Kansas City Chiefs</td><td>6</td><td>11</td><td>0</td><td>.353</td><td>362</td><td>328</td></tr><tr><td>Cleveland Browns</td><td>5</td><td>12</td><td>0</td><td>.294</td><td>279</td><td>379</td></tr><tr><td>Las Vegas Raiders</td><td>3</td><td>14</td><td>0</td><td>.176</td><td>241</td><td>432</td></tr><tr><td>New York Jets</td><td>3</td><td>14</td><td>0</td><td>.176</td><td>300</td><td>503</td></tr><tr><td>Tennessee Titans</td><td>3</td><td>14</td><td>0</td><td>.176</td><td>284</td><td>478</td></tr><tr><td>Denver Broncos</td><td>14</td><td>3</td><td>0</td><td>.824</td><td>401</td><td>311</td></tr></tbody></table><div class="div-title">National Football Conference</div><table class="standings"><thead><tr><th>Team</th><th>W</th><th>L</th><th>T</th><th>PCT</th><th>PF</th><th>PA</th></tr></thead><tbody><tr><td>Chicago Bears</td><td>11</td><td>6</td><td>0</td><td>.647</td><td>441</td><td>415</td></tr><tr><td>Philadelphia Eagles</td><td>11</td><td>6</td><td>0</td><td>.647</td><td>379</td><td>325</td></tr><tr><td>Carolina Panthers</td><td>8</td><td>9</td><td>0</td><td>.471</td><td>311</td><td>380</td></tr><tr><td>Los Angeles Rams</td><td>12</td><td>5</td><td>0</td><td>.706</td><td>518</td><td>346</td></tr><tr><td>San Francisco 49ers</td><td>12</td><td>5</td><td>0</td><td>.706</td><td>437</td><td>371</td></tr><tr><td>Green Bay Packers</td><td>9</td><td>7</td><td>1</td><td>.559</td><td>391</td><td>360</td></tr><tr><td>Minnesota Vikings</td><td>9</td><td>8</td><td>0</td><td>.529</td><td>344</td><td>333</td></tr><tr><td>Detroit Lions</td><td>9</td><td>8</td><td>0</td><td>.529</td><td>481</td><td>413</td></tr><tr><td>Tampa Bay Buccaneers</td><td>8</td><td>9</td><td>0</td><td>.471</td><td>380</td><td>411</td></tr><tr><td>Atlanta Falcons</td><td>8</td><td>9</td><td>0</td><td>.471</td><td>353</td><td>401</td></tr><tr><td>Dallas Cowboys</td><td>7</td><td>9</td><td>1</td><td>.441</td><td>471</td><td>511</td></tr><tr><td>New Orleans Saints</td><td>6</td><td>11</td><td>0</td><td>.353</td><td>306</td><td>383</td></tr><tr><td>Washington Commanders</td><td>5</td><td>12</td><td>0</td><td>.294</td><td>356</td><td>451</td></tr><tr><td>New York Giants</td><td>4</td><td>13</td><td>0</td><td>.235</td><td>381</td><td>439</td></tr><tr><td>Arizona Cardinals</td><td>3</td><td>14</td><td>0</td><td>.176</td><td>355</td><td>488</td></tr><tr><td>Seattle Seahawks</td><td>14</td><td>3</td><td>0</td><td>.824</td><td>483</td><td>292</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+  <script>
+(function() {
+  // dark mode
+  var dm = document.getElementById('dark-toggle');
+  function applyDark(on) {
+    document.body.classList.toggle('dark', on);
+    dm.textContent = on ? 'Light Mode' : 'Dark Mode';
+    localStorage.setItem('dark', on ? '1' : '');
+  }
+  applyDark(localStorage.getItem('dark') === '1');
+  dm.addEventListener('click', function() { applyDark(!document.body.classList.contains('dark')); });
+
+  // sport tabs
+  document.querySelectorAll('.sport-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var sport = btn.dataset.sport;
+      document.querySelectorAll('.sport-tab').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.sport-section').forEach(function(s) { s.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.sport-section[data-sport="' + sport + '"]').forEach(function(s) { s.classList.add('active'); });
+    });
+  });
+
+  // activate first tab with content
+  var firstActive = document.querySelector('.sport-tab');
+  if (firstActive) firstActive.click();
+})();
+</script>
+</body>
+</html>
