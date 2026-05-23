@@ -1385,7 +1385,21 @@ def _generate_page(target_date: date, preview: bool = False):
 
 
 def main():
-    if len(sys.argv) > 1:
+    if len(sys.argv) == 3:
+        start = date.fromisoformat(sys.argv[1])
+        end   = date.fromisoformat(sys.argv[2])
+        if end < start:
+            print("Error: end date must be >= start date", file=sys.stderr)
+            sys.exit(1)
+        d = start
+        while d <= end:
+            out_path = f"boxscores/{d.strftime('%Y%m%d')}.html"
+            if os.path.exists(out_path):
+                print(f"Skipping {d.isoformat()} (already exists)")
+            else:
+                _generate_page(d)
+            d += timedelta(days=1)
+    elif len(sys.argv) == 2:
         _generate_page(date.fromisoformat(sys.argv[1]))
     else:
         _generate_page(date.today() - timedelta(days=1))

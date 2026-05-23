@@ -2,10 +2,21 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0;url=boxscores/20260522.html">
   <title>Boxscores</title>
+  <script>
+    var d = new Date();
+    var s = d.getFullYear()
+      + String(d.getMonth() + 1).padStart(2, '0')
+      + String(d.getDate()).padStart(2, '0');
+    window.location.replace('boxscores/' + s + '.html');
+  </script>
 </head>
 <body>
-  <a href="boxscores/20260522.html">Today's boxscores (20260522)</a>
+  <a id="link" href="">Today's boxscores</a>
+  <script>
+    var a = document.getElementById('link');
+    a.href = 'boxscores/' + s + '.html';
+    a.textContent = 'Today\'s boxscores (' + s + ')';
+  </script>
 </body>
 </html>
