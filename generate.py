@@ -1318,7 +1318,7 @@ def build_page(target_date: date, sports_data: dict):
     <a href="{prev_date.strftime('%Y%m%d')}.html">&larr; {prev_date.strftime('%b %-d')}</a>
     <div style="display:flex;gap:6px">
       <button id="dark-toggle">Dark Mode</button>
-      <a href="{date.today().strftime('%Y%m%d')}.html">Today</a>
+      <a href="/">Today</a>
       {next_link}
     </div>
   </nav>
